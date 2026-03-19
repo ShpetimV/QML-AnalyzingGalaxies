@@ -215,6 +215,7 @@ def save_training_plot(history):
 
 def main():
     print(f"Using device: {DEVICE}")
+    print(f"Using GPU:{torch.cuda.get_device_name(0) if DEVICE == 'cuda' else 'N/A'}")
     print("Mode: FLUX ONLY — no auxiliary features\n")
 
     train_df, val_df, test_df = load_and_split()
