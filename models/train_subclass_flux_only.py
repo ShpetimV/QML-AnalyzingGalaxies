@@ -12,7 +12,7 @@ import matplotlib.pyplot as plt
 import matplotlib.colors as mcolors
 import itertools
 
-from model import SpectraClassifier
+from model_subclasses import SpectraClassifier
 
 # ---------------------------------------------------------------------------
 # Config
