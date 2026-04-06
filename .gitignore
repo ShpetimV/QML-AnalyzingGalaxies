@@ -1,1 +1,3 @@
 .idea
+sdss_dataset
+*.parquet
