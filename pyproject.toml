@@ -5,10 +5,15 @@ description = "Add your description here"
 readme = "README.md"
 requires-python = ">=3.12"
 dependencies = [
+    "astropy>=7.2.0",
     "datasets>=4.8.4",
     "matplotlib>=3.10.8",
     "pandas>=3.0.1",
+    "polars>=1.39.3",
+    "pyarrow>=23.0.1",
+    "requests>=2.33.0",
     "scikit-learn>=1.8.0",
     "scipy-stubs>=1.17.1.3",
+    "sdss-access>=3.0.10",
     "torch>=2.11.0",
 ]
