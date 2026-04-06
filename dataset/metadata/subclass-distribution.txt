@@ -1,0 +1,160 @@
+--- SDSS Subclass Distribution ---
+shape: (140, 3)
+┌────────┬───────────────────────┬────────┐
+│ CLASS  ┆ SUBCLASS              ┆ COUNT  │
+│ ---    ┆ ---                   ┆ ---    │
+│ str    ┆ str                   ┆ u32    │
+╞════════╪═══════════════════════╪════════╡
+│ GALAXY ┆                       ┆ 298626 │
+│ GALAXY ┆ STARFORMING           ┆ 5251   │
+│ GALAXY ┆ STARBURST             ┆ 3680   │
+│ GALAXY ┆ BROADLINE             ┆ 3514   │
+│ GALAXY ┆ AGN                   ┆ 1235   │
+│ GALAXY ┆ AGN BROADLINE         ┆ 511    │
+│ GALAXY ┆ STARFORMING BROADLINE ┆ 208    │
+│ GALAXY ┆ STARBURST BROADLINE   ┆ 46     │
+│ QSO    ┆                       ┆ 738102 │
+│ QSO    ┆ BROADLINE             ┆ 196422 │
+│ QSO    ┆ STARBURST BROADLINE   ┆ 9049   │
+│ QSO    ┆ AGN BROADLINE         ┆ 1175   │
+│ QSO    ┆ STARBURST             ┆ 803    │
+│ QSO    ┆ AGN                   ┆ 773    │
+│ QSO    ┆ STARFORMING           ┆ 342    │
+│ QSO    ┆ STARFORMING BROADLINE ┆ 241    │
+│ STAR   ┆ F3/F5V (30743)        ┆ 97773  │
+│ STAR   ┆ CV                    ┆ 70930  │
+│ STAR   ┆ M5III (221615)        ┆ 45988  │
+│ STAR   ┆ K3V (32147)           ┆ 31558  │
+│ STAR   ┆ K5 (G_19-24)          ┆ 31493  │
+│ STAR   ┆ F6V (16673)           ┆ 28958  │
+│ STAR   ┆ G4V (32923)           ┆ 26088  │
+│ STAR   ┆ K4III (136726)        ┆ 25577  │
+│ STAR   ┆ K0IV (191026)         ┆ 24048  │
+│ STAR   ┆ M4.5:III (123657)     ┆ 21965  │
+│ STAR   ┆ K5Ve (118100)         ┆ 21801  │
+│ STAR   ┆ M1 (204445)           ┆ 20916  │
+│ STAR   ┆ A4V (97603)           ┆ 19101  │
+│ STAR   ┆ G5Iab: (20123)        ┆ 18858  │
+│ STAR   ┆ G8V (101501)          ┆ 18332  │
+│ STAR   ┆ F0IV (81937)          ┆ 18292  │
+│ STAR   ┆ F2III (89254)         ┆ 18206  │
+│ STAR   ┆ K4Iab: (34255)        ┆ 17607  │
+│ STAR   ┆ WDhotter              ┆ 16954  │
+│ STAR   ┆ F8V (30562)           ┆ 16729  │
+│ STAR   ┆ F8V (G_243-63)        ┆ 16322  │
+│ STAR   ┆ G0 (63791)            ┆ 15436  │
+│ STAR   ┆ G0Va (143761)         ┆ 14959  │
+│ STAR   ┆ F2V (33256)           ┆ 13902  │
+│ STAR   ┆ G3Ib (58526)          ┆ 13852  │
+│ STAR   ┆ M3III (44478)         ┆ 12082  │
+│ STAR   ┆ K0V (10780)           ┆ 10400  │
+│ STAR   ┆ WDcooler              ┆ 10277  │
+│ STAR   ┆ F9IV (136064)         ┆ 9782   │
+│ STAR   ┆ O8/O9 (167771)        ┆ 9767   │
+│ STAR   ┆ WDmagnetic            ┆ 9572   │
+│ STAR   ┆ G1V (95128)           ┆ 9563   │
+│ STAR   ┆ K1IVa (142091)        ┆ 8587   │
+│ STAR   ┆ G0Ib (204867)         ┆ 7740   │
+│ STAR   ┆ CalciumWD             ┆ 6881   │
+│ STAR   ┆ F8Ibvar (45412)       ┆ 6798   │
+│ STAR   ┆ F6II (61295)          ┆ 5509   │
+│ STAR   ┆ A0IVn (25642)         ┆ 5426   │
+│ STAR   ┆ F0V (90277)           ┆ 5405   │
+│ STAR   ┆ M6III (148783)        ┆ 4826   │
+│ STAR   ┆ A2II (39866)          ┆ 4760   │
+│ STAR   ┆ G8V (75732)           ┆ 4639   │
+│ STAR   ┆ M8IIIe (84748)        ┆ 4513   │
+│ STAR   ┆ A9V (154660)          ┆ 4243   │
+│ STAR   ┆ A4 (G_165-39)         ┆ 4097   │
+│ STAR   ┆ G5III+... (157910)    ┆ 3930   │
+│ STAR   ┆ F0III (89025)         ┆ 3855   │
+│ STAR   ┆ O9.5Iae (30614)       ┆ 3730   │
+│ STAR   ┆ F6III (61064)         ┆ 3702   │
+│ STAR   ┆ G0 (G_101-29)         ┆ 3646   │
+│ STAR   ┆ sdF3 (140283)         ┆ 3559   │
+│ STAR   ┆ G9IV (100030)         ┆ 3493   │
+│ STAR   ┆ A4V (136729)          ┆ 3416   │
+│ STAR   ┆ K5 (110281)           ┆ 3247   │
+│ STAR   ┆ K2III (115136)        ┆ 2945   │
+│ STAR   ┆ Ldwarf                ┆ 2873   │
+│ STAR   ┆ F0II (25291)          ┆ 2847   │
+│ STAR   ┆ A8V (155514)          ┆ 2471   │
+│ STAR   ┆ B1Ve (212571)         ┆ 2354   │
+│ STAR   ┆ sd:F0 (G_84-29)       ┆ 2319   │
+│ STAR   ┆ A4p (G_37-26)         ┆ 2317   │
+│ STAR   ┆ A1Iae (12953)         ┆ 2313   │
+│ STAR   ┆ K3Iab: (4817)         ┆ 2102   │
+│ STAR   ┆ B9Vn (177756)         ┆ 2001   │
+│ STAR   ┆ K1III (18322)         ┆ 1915   │
+│ STAR   ┆ B8Ib (208501)         ┆ 1903   │
+│ STAR   ┆ B2Vne (58343)         ┆ 1889   │
+│ STAR   ┆ F5Ib... (17463)       ┆ 1870   │
+│ STAR   ┆ A3Iae (223385)        ┆ 1850   │
+│ STAR   ┆ O8e (188001)          ┆ 1697   │
+│ STAR   ┆ B5 (338529)           ┆ 1669   │
+│ STAR   ┆ Am (78362)            ┆ 1600   │
+│ STAR   ┆ B0IVe (5394)          ┆ 1553   │
+│ STAR   ┆ K3III (101673)        ┆ 1549   │
+│ STAR   ┆ A0 (19510)            ┆ 1544   │
+│ STAR   ┆ F6Iab: (187929)       ┆ 1518   │
+│ STAR   ┆ K3Ib... (17506)       ┆ 1475   │
+│ STAR   ┆ A1V (95418)           ┆ 1454   │
+│ STAR   ┆ G9Ib (221861)         ┆ 1417   │
+│ STAR   ┆ Carbon                ┆ 1325   │
+│ STAR   ┆ B8IV (171301)         ┆ 1323   │
+│ STAR   ┆ A6IV (28527)          ┆ 1194   │
+│ STAR   ┆ G5/G6IVw (26297)      ┆ 1170   │
+│ STAR   ┆ A5Ia (17378)          ┆ 1156   │
+│ STAR   ┆ K3p (165195)          ┆ 1087   │
+│ STAR   ┆ B2IV-V (176819)       ┆ 1063   │
+│ STAR   ┆ A1III (225180)        ┆ 1040   │
+│ STAR   ┆ K5III (111335)        ┆ 1033   │
+│ STAR   ┆ B9.5V+... (37269)     ┆ 1012   │
+│ STAR   ┆ M2Iab: (36389)        ┆ 1004   │
+│ STAR   ┆ A1m (78209)           ┆ 978    │
+│ STAR   ┆ B3Ib/II (51309)       ┆ 935    │
+│ STAR   ┆ B3V (29763)           ┆ 926    │
+│ STAR   ┆ K0IIIa (57669)        ┆ 818    │
+│ STAR   ┆ F0Ib (36673)          ┆ 809    │
+│ STAR   ┆ B9III (15318)         ┆ 785    │
+│ STAR   ┆ B2III (35468)         ┆ 782    │
+│ STAR   ┆ K1V... (25329)        ┆ 776    │
+│ STAR   ┆ G0.5IV (14214)        ┆ 767    │
+│ STAR   ┆ B2Iaevar (41117)      ┆ 673    │
+│ STAR   ┆ M0III (168720)        ┆ 647    │
+│ STAR   ┆ B0.5Ibe... (187459)   ┆ 643    │
+│ STAR   ┆ M4II (175588)         ┆ 630    │
+│ STAR   ┆ B2.5V (175426)        ┆ 571    │
+│ STAR   ┆ B7IVe (209409)        ┆ 553    │
+│ STAR   ┆ A5II (34578)          ┆ 552    │
+│ STAR   ┆ A2Ia (14489)          ┆ 542    │
+│ STAR   ┆ B2Ve (164284)         ┆ 539    │
+│ STAR   ┆ B8III (220575)        ┆ 484    │
+│ STAR   ┆ B6IIIpe (109387)      ┆ 482    │
+│ STAR   ┆ B9 (105262)           ┆ 482    │
+│ STAR   ┆ B5V (173087)          ┆ 473    │
+│ STAR   ┆ M7IIIevar (177940)    ┆ 457    │
+│ STAR   ┆ B5III (209419)        ┆ 395    │
+│ STAR   ┆ B3II (175156)         ┆ 390    │
+│ STAR   ┆ M2III (169305)        ┆ 359    │
+│ STAR   ┆ B0.5Iae (185859)      ┆ 345    │
+│ STAR   ┆ B6IV (174959)         ┆ 339    │
+│ STAR   ┆ B5Ib (191243)         ┆ 311    │
+│ STAR   ┆ B2Vne (202904)        ┆ 282    │
+│ STAR   ┆ B2.5Ve (187811)       ┆ 270    │
+│ STAR   ┆ B3Ve (25940)          ┆ 150    │
+│ STAR   ┆ K5III (120933)        ┆ 120    │
+│ STAR   ┆ M5Iab: (197812)       ┆ 99     │
+└────────┴───────────────────────┴────────┘
+
+--- SDSS Primary Class Distribution ---
+shape: (3, 2)
+┌────────┬─────────────┐
+│ CLASS  ┆ TOTAL_COUNT │
+│ ---    ┆ ---         │
+│ str    ┆ u32         │
+╞════════╪═════════════╡
+│ QSO    ┆ 946907      │
+│ STAR   ┆ 923306      │
+│ GALAXY ┆ 313071      │
+└────────┴─────────────┘
