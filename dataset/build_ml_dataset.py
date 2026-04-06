@@ -15,7 +15,7 @@ MAPPING_FILE = 'assets/subclass_merge_groups.json'
 FINAL_DATASET_FILE = 'ML_SDSS_CLEANED_DATA.parquet'
 
 MIN_SAMPLES = 500
-MAX_SAMPLES = 5000
+MAX_SAMPLES = 5_000
 
 
 # ==========================================

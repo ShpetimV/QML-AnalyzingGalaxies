@@ -17,7 +17,7 @@ DOWNLOAD_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'sdss_sp
 
 # Download Settings
 SAMPLES_PER_SUBCLASS = 10_000
-MAX_WORKERS = 30
+MAX_WORKERS = 20
 TIMEOUT = 30
 BASE_URL = "https://data.sdss.org/sas/dr19/spectro/boss/redux"
 
@@ -151,10 +151,8 @@ class SDSSDownloader:
         url = self.build_url(row)
         path = os.path.join(DOWNLOAD_DIR, row['SPEC_FILE'])
 
-        if not url:
-            return f"Failed (Malformed): {row['SPEC_FILE']}"
-        if os.path.exists(path):
-            return f"Exists: {row['SPEC_FILE']}"
+        if not url: return f"Failed (Malformed): {row['SPEC_FILE']}"
+        if os.path.exists(path): return None  # Changed to None to keep progress clean
 
         session = self.get_session()
         try:
@@ -162,27 +160,51 @@ class SDSSDownloader:
                 r.raise_for_status()
                 with open(path, 'wb') as f:
                     f.write(r.content)
+
+            # Simple progress update inside the thread
+            self.completed += 1
+            if self.completed % 50 == 0 or self.completed == self.total:
+                pct = (self.completed / self.total) * 100
+                print(f"   Progress: {self.completed}/{self.total} ({pct:.1f}%)")
+
             return f"Success: {row['SPEC_FILE']}"
-        except Exception as e:
-            return f"Failed ({url}): {e}"
+        except Exception:
+            return f"Failed: {row['SPEC_FILE']}"
 
-    def run(self):
-        """Manages the concurrent download of all files in the DataFrame."""
-        print(f"\n5. Starting download of {self.total} files...")
+    def run(self, max_passes=25):
+        """Repeatedly attempts to download missing files until complete."""
+        import time
 
-        # Convert DF to list of dicts for the executor
-        tasks = self.df.to_dicts()
+        for pass_num in range(1, max_passes + 1):
+            # Identify missing files
+            all_tasks = self.df.to_dicts()
+            missing_tasks = [
+                row for row in all_tasks
+                if not os.path.exists(os.path.join(DOWNLOAD_DIR, row['SPEC_FILE']))
+            ]
 
-        with ThreadPoolExecutor(max_workers=MAX_WORKERS) as executor:
-            for result in executor.map(self.fetch_file, tasks):
-                self.completed += 1
+            if not missing_tasks:
+                print(f"\n[DONE] All {self.total} files verified on disk.")
+                return
 
-                if result.startswith("Failed"):
-                    print(result)
+            print(f"\nPass {pass_num}/{max_passes}: Attempting {len(missing_tasks)} missing files...")
 
-                if self.completed % 50 == 0 or self.completed == self.total:
-                    pct = (self.completed / self.total) * 100
-                    print(f"   Progress: {self.completed}/{self.total} ({pct:.1f}%)")
+            self.completed = self.total - len(missing_tasks)
+
+            with ThreadPoolExecutor(max_workers=MAX_WORKERS) as executor:
+                # We use list() to block until the pass is done
+                results = list(executor.map(self.fetch_file, missing_tasks))
+
+            # Count how many actually succeeded this pass
+            successes = sum(1 for r in results if r and r.startswith("Success"))
+            if successes == 0 and pass_num < max_passes:
+                print("No new files downloaded this pass. Waiting 5s for server cool-down...")
+                time.sleep(5)
+
+        # Final tally check
+        remaining = sum(1 for row in all_tasks if not os.path.exists(os.path.join(DOWNLOAD_DIR, row['SPEC_FILE'])))
+        if remaining > 0:
+            print(f"\nFinished with {remaining} files still missing after {max_passes} passes.")
 
 
 # ==========================================
@@ -201,9 +223,12 @@ if __name__ == "__main__":
 
     # Phase 3: Download
     downloader = SDSSDownloader(final_labels_df)
-    downloader.run()
+    downloader.run(max_passes=25)
 
     print("\nTry Download once again to catch any missed files...")
     downloader.run()  # Run a second time to catch any missed files
+
+    print("aaaand one last time to be sure...")
+    downloader.run()  # Final run to catch any stragglers
 
     print("\nAll tasks completed successfully.")
