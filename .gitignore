@@ -1,3 +1,7 @@
 .idea
+
+# everything SDSS related
 sdss_spectra
 *.parquet
+*.gz
+subclass_merge_groups.json
