@@ -14,7 +14,7 @@ LABELS_FILE = 'assets/my_qml_dataset_labels.parquet'
 MAPPING_FILE = 'assets/subclass_merge_groups.json'
 FINAL_DATASET_FILE = 'ML_SDSS_CLEANED_DATA.parquet'
 
-MIN_SAMPLES = 500
+MIN_SAMPLES = 250
 MAX_SAMPLES = 5_000
 
 
@@ -30,6 +30,10 @@ def load_mapping_logic(mapping_path):
     reverse_map = {}
     for group_name, subclasses in mapping.items():
         for sub in subclasses:
+
+            if sub == "":
+                sub = "NORMAL"
+
             # Determine prefix based on Group Name to prevent GALAXY/QSO collisions
             if group_name.startswith("GALAXY_"):
                 prefix = "GALAXY"
