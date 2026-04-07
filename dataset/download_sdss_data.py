@@ -1,11 +1,10 @@
 import os
-import requests
-import threading
 import polars as pl
 import numpy as np
 from astropy.table import Table
-from concurrent.futures import ThreadPoolExecutor
-
+import subprocess
+import time
+from tqdm import tqdm
 
 # ==========================================
 # CONFIGURATION
@@ -14,12 +13,10 @@ from concurrent.futures import ThreadPoolExecutor
 CATALOG_FILE = 'assets/spAll-lite-v6_1_3.fits.gz'
 OUTPUT_LABELS = 'assets/my_qml_dataset_labels.parquet'
 DOWNLOAD_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'sdss_spectra')
+PROJECT_DIR = os.path.dirname(os.path.abspath(__file__))
 
 # Download Settings
 SAMPLES_PER_SUBCLASS = 10_000
-MAX_WORKERS = 20
-TIMEOUT = 30
-BASE_URL = "https://data.sdss.org/sas/dr19/spectro/boss/redux"
 
 # Target Classes
 TARGET_CATEGORIES = {
@@ -114,97 +111,87 @@ def finalize_columns(df):
 
 
 # ==========================================
-# DOWNLOAD MANAGEMENT
+# SUPER-SPEED RSYNC DOWNLOADER
 # ==========================================
 
-class SDSSDownloader:
-    def __init__(self, df):
-        self.df = df
-        self.thread_local = threading.local()
-        self.completed = 0
-        self.total = df.height
+def download_via_rsync(df, max_retries=10):
+    """Downloads spectra using rsync with a progress bar and retry logic."""
+    print(f"\n5. Preparing rsync payload for {df.height} files...")
+    list_path = os.path.join(PROJECT_DIR, 'rsync_download_list.txt')
 
-    def get_session(self):
-        """Maintains a persistent HTTP connection per thread for speed."""
-        if not hasattr(self.thread_local, "session"):
-            self.thread_local.session = requests.Session()
-            self.thread_local.session.headers.update({
-                'User-Agent': 'SDSS-ML-Downloader/2.0 (High-Speed-Session)'
-            })
-        return self.thread_local.session
+    missing_files = 0
 
-    def build_url(self, row):
-        """Parses filename to build correct SDSS-V/Legacy path."""
-        spec_file = row['SPEC_FILE']
-        run2d = row['RUN2D'] or 'v6_1_3'
+    # 1. Build the list and count exactly how many are missing
+    with open(list_path, 'w') as f:
+        for row in df.iter_rows(named=True):
+            spec_file = row['SPEC_FILE']
+            try:
+                parts = spec_file.split('-')
+                rel_path = f"{parts[1]}/{parts[2]}/{spec_file}"
+                f.write(f"{rel_path}\n")
+
+                # Check if it exists so our progress bar is 100% accurate
+                if not os.path.exists(os.path.join(DOWNLOAD_DIR, rel_path)):
+                    missing_files += 1
+            except Exception:
+                continue
+
+    if missing_files == 0:
+        print("\nAll files are already on disk. Download complete!")
+        return
+
+    print(f"   {missing_files} files remaining to download.")
+
+    # 2. Smart Path Logic
+    fast_paths = ["/opt/homebrew/bin/rsync", "/usr/local/bin/rsync"]
+    rsync_path = "rsync"
+    for p in fast_paths:
+        if os.path.exists(p):
+            rsync_path = p
+            break
+
+    base_rsync_url = "rsync://dtn.sdss.org/dr19/spectro/boss/redux/v6_1_3/spectra/lite/"
+
+    # 3. The Clean Command
+    # -a: archive
+    # --no-motd: Hides the SDSS warning message!
+    # --out-format=SYNCED: Stops the spam. Only prints the word "SYNCED" when a file is done.
+    cmd = [
+        rsync_path, "-a", "--prune-empty-dirs", "--no-motd",
+        "--out-format=SYNCED", f"--files-from={list_path}",
+        base_rsync_url, DOWNLOAD_DIR
+    ]
+
+    for attempt in range(1, max_retries + 1):
+        print(f"\n6. Starting rsync stream (Attempt {attempt}/{max_retries})...")
 
         try:
-            parts = spec_file.split('-')
-            field_folder = parts[1]  # Preserves leading zeros
-            mjd_folder = parts[2]
-            return f"{BASE_URL}/{run2d}/spectra/lite/{field_folder}/{mjd_folder}/{spec_file}"
-        except (IndexError, AttributeError):
-            return None
+            process = subprocess.Popen(
+                cmd, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, text=True
+            )
 
-    def fetch_file(self, row):
-        """Downloads a single file, handling errors and reporting status."""
-        url = self.build_url(row)
-        path = os.path.join(DOWNLOAD_DIR, row['SPEC_FILE'])
+            with tqdm(total=missing_files, desc="Downloading", unit="file") as pbar:
+                for line in process.stdout:
+                    if "SYNCED" in line:
+                        pbar.update(1)
+                    elif "error" in line.lower() or "failed" in line.lower():
+                        # If a real error happens, print it above the progress bar nicely
+                        tqdm.write(f"{line.strip()}")
 
-        if not url: return f"Failed (Malformed): {row['SPEC_FILE']}"
-        if os.path.exists(path): return None  # Changed to None to keep progress clean
+            process.wait()
 
-        session = self.get_session()
-        try:
-            with session.get(url, timeout=TIMEOUT) as r:
-                r.raise_for_status()
-                with open(path, 'wb') as f:
-                    f.write(r.content)
-
-            # Simple progress update inside the thread
-            self.completed += 1
-            if self.completed % 50 == 0 or self.completed == self.total:
-                pct = (self.completed / self.total) * 100
-                print(f"   Progress: {self.completed}/{self.total} ({pct:.1f}%)")
-
-            return f"Success: {row['SPEC_FILE']}"
-        except Exception:
-            return f"Failed: {row['SPEC_FILE']}"
-
-    def run(self, max_passes=25):
-        """Repeatedly attempts to download missing files until complete."""
-        import time
-
-        for pass_num in range(1, max_passes + 1):
-            # Identify missing files
-            all_tasks = self.df.to_dicts()
-            missing_tasks = [
-                row for row in all_tasks
-                if not os.path.exists(os.path.join(DOWNLOAD_DIR, row['SPEC_FILE']))
-            ]
-
-            if not missing_tasks:
-                print(f"\n[DONE] All {self.total} files verified on disk.")
+            if process.returncode == 0:
+                print("\nRSYNC DOWNLOAD COMPLETE!")
                 return
-
-            print(f"\nPass {pass_num}/{max_passes}: Attempting {len(missing_tasks)} missing files...")
-
-            self.completed = self.total - len(missing_tasks)
-
-            with ThreadPoolExecutor(max_workers=MAX_WORKERS) as executor:
-                # We use list() to block until the pass is done
-                results = list(executor.map(self.fetch_file, missing_tasks))
-
-            # Count how many actually succeeded this pass
-            successes = sum(1 for r in results if r and r.startswith("Success"))
-            if successes == 0 and pass_num < max_passes:
-                print("No new files downloaded this pass. Waiting 5s for server cool-down...")
+            else:
+                print(f"\nRsync connection dropped (Code: {process.returncode}).\n -> Re-establishing connection in 5 seconds...")
                 time.sleep(5)
 
-        # Final tally check
-        remaining = sum(1 for row in all_tasks if not os.path.exists(os.path.join(DOWNLOAD_DIR, row['SPEC_FILE'])))
-        if remaining > 0:
-            print(f"\nFinished with {remaining} files still missing after {max_passes} passes.")
+        except Exception as e:
+            print(f"\nPython Error: {e}")
+            return
+
+    print("\nMAXIMUM RETRIES REACHED. Some files may be missing.")
 
 
 # ==========================================
@@ -221,14 +208,5 @@ if __name__ == "__main__":
     final_labels_df.write_parquet(OUTPUT_LABELS)
     print(f"Metadata saved to {OUTPUT_LABELS}")
 
-    # Phase 3: Download
-    downloader = SDSSDownloader(final_labels_df)
-    downloader.run(max_passes=25)
-
-    print("\nTry Download once again to catch any missed files...")
-    downloader.run()  # Run a second time to catch any missed files
-
-    print("aaaand one last time to be sure...")
-    downloader.run()  # Final run to catch any stragglers
-
-    print("\nAll tasks completed successfully.")
+    # Phase 3: Ultra-Fast Download
+    download_via_rsync(final_labels_df)

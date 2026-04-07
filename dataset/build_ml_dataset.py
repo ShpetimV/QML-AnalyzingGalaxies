@@ -78,7 +78,15 @@ def extract_flux_data(df, spectra_dir):
 
     rows = df.to_dicts()
     for idx, row in tqdm(enumerate(rows), total=len(rows), desc="Extracting Spectra"):
-        file_path = os.path.join(spectra_dir, row['SPEC_FILE'])
+        spec_file = row['SPEC_FILE']
+
+        try:
+            parts = spec_file.split('-')
+            field_folder = parts[1]
+            mjd_folder = parts[2]
+            file_path = os.path.join(spectra_dir, field_folder, mjd_folder, spec_file)
+        except IndexError:
+            continue
 
         if not os.path.exists(file_path):
             continue
