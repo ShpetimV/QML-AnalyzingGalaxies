@@ -114,33 +114,35 @@ def finalize_columns(df):
 # SUPER-SPEED RSYNC DOWNLOADER
 # ==========================================
 
-def download_via_rsync(df, max_retries=10):
-    """Downloads spectra using rsync with a progress bar and retry logic."""
-    print(f"\n5. Preparing rsync payload for {df.height} files...")
-    list_path = os.path.join(PROJECT_DIR, 'rsync_download_list.txt')
+import subprocess
+import time
+import os
+from tqdm import tqdm
 
-    missing_files = 0
 
-    # 1. Build the list and count exactly how many are missing
-    with open(list_path, 'w') as f:
-        for row in df.iter_rows(named=True):
-            spec_file = row['SPEC_FILE']
-            try:
-                parts = spec_file.split('-')
-                rel_path = f"{parts[1]}/{parts[2]}/{spec_file}"
-                f.write(f"{rel_path}\n")
+def download_via_rsync(df, max_retries=5, batch_size=20000):
+    print(f"\n5. Analyzing {df.height} files to build missing file list...")
 
-                # Check if it exists so our progress bar is 100% accurate
-                if not os.path.exists(os.path.join(DOWNLOAD_DIR, rel_path)):
-                    missing_files += 1
-            except Exception:
-                continue
+    missing_files = []
 
-    if missing_files == 0:
+    # 1. Check disk and build a list of ONLY what is missing
+    for row in df.iter_rows(named=True):
+        spec_file = row['SPEC_FILE']
+        try:
+            parts = spec_file.split('-')
+            rel_path = f"{parts[1]}/{parts[2]}/{spec_file}"
+
+            if not os.path.exists(os.path.join(DOWNLOAD_DIR, rel_path)):
+                missing_files.append(rel_path)
+        except Exception:
+            continue
+
+    total_missing = len(missing_files)
+    if total_missing == 0:
         print("\nAll files are already on disk. Download complete!")
         return
 
-    print(f"   {missing_files} files remaining to download.")
+    print(f"   {total_missing} files remaining to download.")
 
     # 2. Smart Path Logic
     fast_paths = ["/opt/homebrew/bin/rsync", "/usr/local/bin/rsync"]
@@ -151,47 +153,58 @@ def download_via_rsync(df, max_retries=10):
             break
 
     base_rsync_url = "rsync://dtn.sdss.org/dr19/spectro/boss/redux/v6_1_3/spectra/lite/"
+    list_path = os.path.join(PROJECT_DIR, 'rsync_download_list.txt')
 
-    # 3. The Clean Command
-    # -a: archive
-    # --no-motd: Hides the SDSS warning message!
-    # --out-format=SYNCED: Stops the spam. Only prints the word "SYNCED" when a file is done.
-    cmd = [
-        rsync_path, "-a", "--prune-empty-dirs", "--no-motd",
-        "--out-format=SYNCED", f"--files-from={list_path}",
-        base_rsync_url, DOWNLOAD_DIR
-    ]
+    # 3. Split the missing files into smaller chunks (Batches)
+    batches = [missing_files[i:i + batch_size] for i in range(0, total_missing, batch_size)]
+    print(f"   Divided into {len(batches)} manageable batches of ~{batch_size} files.")
 
-    for attempt in range(1, max_retries + 1):
-        print(f"\n6. Starting rsync stream (Attempt {attempt}/{max_retries})...")
+    # 4. Master Progress Bar
+    with tqdm(total=total_missing, desc="Downloading", unit="file") as pbar:
 
-        try:
-            process = subprocess.Popen(
-                cmd, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, text=True
-            )
+        for batch_idx, batch in enumerate(batches):
+            # Write current batch to the text file
+            with open(list_path, 'w') as f:
+                f.write("\n".join(batch))
 
-            with tqdm(total=missing_files, desc="Downloading", unit="file") as pbar:
-                for line in process.stdout:
-                    if "SYNCED" in line:
-                        pbar.update(1)
-                    elif "error" in line.lower() or "failed" in line.lower():
-                        # If a real error happens, print it above the progress bar nicely
-                        tqdm.write(f"{line.strip()}")
+            # Added --timeout=300 (5 minutes) so the Mac doesn't hang up prematurely
+            cmd = [
+                rsync_path, "-a", "--prune-empty-dirs", "--no-motd",
+                "--timeout=300", "--out-format=SYNCED",
+                f"--files-from={list_path}", base_rsync_url, DOWNLOAD_DIR
+            ]
 
-            process.wait()
+            # Retry loop just for this specific batch
+            for attempt in range(1, max_retries + 1):
+                try:
+                    process = subprocess.Popen(
+                        cmd, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, text=True
+                    )
 
-            if process.returncode == 0:
-                print("\nRSYNC DOWNLOAD COMPLETE!")
-                return
-            else:
-                print(f"\nRsync connection dropped (Code: {process.returncode}).\n -> Re-establishing connection in 5 seconds...")
-                time.sleep(5)
+                    for line in process.stdout:
+                        if "SYNCED" in line:
+                            pbar.update(1)
+                        elif "error" in line.lower() or "failed" in line.lower() or "timeout" in line.lower():
+                            tqdm.write(f"Batch {batch_idx + 1}: {line.strip()}")
 
-        except Exception as e:
-            print(f"\nPython Error: {e}")
-            return
+                    process.wait()
 
-    print("\nMAXIMUM RETRIES REACHED. Some files may be missing.")
+                    if process.returncode == 0:
+                        break  # Batch succeeded, break out of retry loop and move to next batch
+                    else:
+                        tqdm.write(
+                            f"Rsync dropped on Batch {batch_idx + 1} (Code: {process.returncode}). Retrying in 5s...")
+                        time.sleep(5)
+
+                except Exception as e:
+                    tqdm.write(f"\nPython Error on Batch {batch_idx + 1}: {e}")
+                    break
+
+    # Cleanup
+    if os.path.exists(list_path):
+        os.remove(list_path)
+
+    print("\nRSYNC BATCH DOWNLOAD COMPLETE!")
 
 
 # ==========================================
