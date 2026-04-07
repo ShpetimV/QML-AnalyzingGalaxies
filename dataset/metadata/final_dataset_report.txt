@@ -1,0 +1,82 @@
+==================================================
+-----DATASET ANALYSIS REPORT-----
+==================================================
+
+CLASSES DROPPED (Below 250 samples):
+   - QSO_STARFORMING_BROADLINE: 238 samples
+   - STAR_CARBON: 212 samples
+   - GALAXY_STARFORMING_BROADLINE: 208 samples
+   - STAR_M7: 165 samples
+   - STAR_O9: 44 samples
+   - GALAXY_STARBURST_BROADLINE: 44 samples
+   - STAR_B6: 32 samples
+   - STAR_B7: 19 samples
+   - STAR_A3: 9 samples
+
+CLASSES KEPT (62 total):
+   - STAR_F3                   |  5000 samples
+   - STAR_M1                   |  5000 samples
+   - STAR_CV                   |  5000 samples
+   - STAR_F8                   |  5000 samples
+   - STAR_WHITE_DWARF          |  5000 samples
+   - STAR_G0_G0_5              |  5000 samples
+   - STAR_K3                   |  5000 samples
+   - STAR_O8                   |  5000 samples
+   - STAR_F2                   |  5000 samples
+   - STAR_A4                   |  5000 samples
+   - QSO_NORMAL                |  5000 samples
+   - STAR_M4_M4_5              |  5000 samples
+   - STAR_G5                   |  5000 samples
+   - STAR_G8                   |  5000 samples
+   - GALAXY_NORMAL             |  5000 samples
+   - STAR_M5                   |  5000 samples
+   - STAR_K4                   |  5000 samples
+   - STAR_G3                   |  5000 samples
+   - STAR_F6                   |  5000 samples
+   - STAR_G1                   |  5000 samples
+   - QSO_STARBURST_BROADLINE   |  5000 samples
+   - STAR_K1                   |  5000 samples
+   - STAR_K5                   |  5000 samples
+   - STAR_K0                   |  5000 samples
+   - STAR_A0                   |  5000 samples
+   - STAR_F0                   |  5000 samples
+   - STAR_G4                   |  5000 samples
+   - STAR_M3                   |  5000 samples
+   - STAR_F9                   |  5000 samples
+   - QSO_BROADLINE             |  5000 samples
+   - GALAXY_STARFORMING        |  4522 samples
+   - STAR_A2                   |  4472 samples
+   - STAR_M6                   |  4103 samples
+   - STAR_M8                   |  3604 samples
+   - GALAXY_STARBURST          |  3310 samples
+   - STAR_A9                   |  2810 samples
+   - STAR_G9                   |  2566 samples
+   - STAR_K2                   |  2362 samples
+   - STAR_A1                   |  1977 samples
+   - STAR_A8                   |  1822 samples
+   - GALAXY_BROADLINE          |  1808 samples
+   - STAR_B9_B9_5              |  1802 samples
+   - STAR_BROWN_DWARF_L        |  1561 samples
+   - STAR_B1                   |  1494 samples
+   - STAR_SUBDWARF_F           |  1315 samples
+   - GALAXY_AGN                |  1202 samples
+   - STAR_A_METALLIC           |  1199 samples
+   - QSO_AGN_BROADLINE         |  1173 samples
+   - STAR_B5                   |  1158 samples
+   - STAR_B3                   |   923 samples
+   - STAR_B8                   |   910 samples
+   - STAR_B2_B2_5              |   890 samples
+   - QSO_STARBURST             |   798 samples
+   - QSO_AGN                   |   770 samples
+   - GALAXY_AGN_BROADLINE      |   509 samples
+   - STAR_F5                   |   458 samples
+   - STAR_B0                   |   443 samples
+   - STAR_A6                   |   425 samples
+   - STAR_M2                   |   424 samples
+   - STAR_A5                   |   357 samples
+   - QSO_STARFORMING           |   327 samples
+   - STAR_M0                   |   276 samples
+
+==================================================
+TOTAL FINAL SAMPLES: 201770
+==================================================
