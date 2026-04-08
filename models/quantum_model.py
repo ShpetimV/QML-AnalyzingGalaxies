@@ -124,15 +124,18 @@ class AngleEncodingClassifier(nn.Module):
     def _circuit(self, features, weights):
         """
         Data-reuploading VQC with angle encoding.
-          features : (n_qubits,)
-          weights  : (n_layers, n_qubits, 3)
+        Supports PennyLane parameter broadcasting:
+          features : (B, n_qubits) — batched input
+          weights  : (n_layers, n_qubits, 3) — shared across batch
+        Each features[:, q] is shape (B,) → PennyLane executes
+        the entire batch in one vectorised pass (no Python loop).
         """
         for layer in range(self.n_layers):
             # Encode data as RY rotations (re-uploaded each layer)
             for q in range(self.n_qubits):
-                qml.RY(features[q], wires=q)
+                qml.RY(features[:, q], wires=q)    # (B,) — broadcasted
 
-            # Trainable rotations
+            # Trainable rotations (scalars — shared across batch)
             for q in range(self.n_qubits):
                 qml.Rot(weights[layer, q, 0],
                         weights[layer, q, 1],
@@ -158,11 +161,9 @@ class AngleEncodingClassifier(nn.Module):
         feat = self.extractor(flux)                   # [B, n_qubits]
         feat = torch.tanh(feat) * math.pi             # bound to [-π, π]
 
-        # Run quantum circuit per sample
-        q_out = torch.stack([
-            torch.stack(self.qnode(feat[i], self.q_weights))
-            for i in range(B)
-        ]).float()  # [B, n_qubits] — cast from float64 to float32
+        # Run quantum circuit — entire batch at once via broadcasting
+        q_list = self.qnode(feat, self.q_weights)     # list of n_qubits tensors, each (B,)
+        q_out = torch.stack(q_list, dim=1).float()    # [B, n_qubits]
 
         # Concatenate scalar features
         if scalars is not None and scalars.numel() > 0:
@@ -298,6 +299,8 @@ class AmplitudeEncodingClassifier(nn.Module):
         state_vectors = self._prepare_state(flux)   # [B, 2^n_qubits]
 
         # Quantum circuit per sample
+        # NOTE: StatePrep doesn't support parameter broadcasting,
+        # so amplitude encoding must loop per-sample (slower than angle).
         q_out = torch.stack([
             torch.stack(self.qnode(state_vectors[i], self.q_weights))
             for i in range(B)

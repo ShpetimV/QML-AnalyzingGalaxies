@@ -184,12 +184,14 @@ def main():
                         help="Number of variational layers (default: 4)")
     parser.add_argument("--epochs", type=int, default=20,
                         help="Training epochs (default: 20)")
-    parser.add_argument("--batch_size", type=int, default=16,
-                        help="Batch size (default: 16, keep small for quantum)")
+    parser.add_argument("--batch_size", type=int, default=64,
+                        help="Batch size (default: 64, broadcasting makes larger batches efficient)")
     parser.add_argument("--lr", type=float, default=1e-3,
                         help="Learning rate (default: 1e-3)")
     parser.add_argument("--dropout", type=float, default=0.2,
                         help="Dropout rate")
+    parser.add_argument("--subset", type=int, default=0,
+                        help="Use only N samples for fast experimentation (0 = full dataset)")
     args = parser.parse_args()
 
     encoding_name = f"{args.encoding}_{args.n_qubits}q_{args.n_layers}L"
@@ -208,6 +210,23 @@ def main():
     )
     dm = SDSSDataModule(config)
     dm.prepare_data()
+
+    # Optional: use a subset for fast experimentation
+    if args.subset > 0:
+        from torch.utils.data import Subset
+        def _subset(ds, n):
+            n = min(n, len(ds))
+            indices = torch.randperm(len(ds))[:n].tolist()
+            sub = Subset(ds, indices)
+            # Carry over attributes the loader/sampler needs
+            sub.labels = ds.labels[indices]
+            sub.is_train = ds.is_train
+            return sub
+
+        dm.train_ds = _subset(dm.train_ds, args.subset)
+        dm.val_ds   = _subset(dm.val_ds, args.subset // 4)
+        dm.test_ds  = _subset(dm.test_ds, args.subset // 4)
+        print(f"  ⚡ Subset mode: train={len(dm.train_ds)} val={len(dm.val_ds)} test={len(dm.test_ds)}")
 
     train_loader = dm.get_loader(dm.train_ds, use_sampler=True)
     val_loader   = dm.get_loader(dm.val_ds)
