@@ -11,15 +11,16 @@ class SDSSDataset(Dataset):
     def __init__(self, flux_data, scalar_data, labels, class_names, config: SDSSDataConfig, is_train: bool = False):
         self.flux_data = torch.tensor(flux_data, dtype=torch.float32) if flux_data is not None else None
 
-        # remove edge artifacts
-        start_trim = 100
-        end_trim = 100
-
-        if flux_data is not None:
-            cropped_flux = flux_data[:, start_trim:-end_trim]
-            self.flux_data = torch.tensor(cropped_flux, dtype=torch.float32)
-        else:
-            self.flux_data = None
+        # # remove edge artifacts
+        # start_trim = 100
+        # end_trim = 100
+        #
+        # # TODO: add fixed length (with cutting and interpolation)
+        # if flux_data is not None:
+        #     cropped_flux = flux_data[:, start_trim:-end_trim]
+        #     self.flux_data = torch.tensor(cropped_flux, dtype=torch.float32)
+        # else:
+        #     self.flux_data = None
 
         self.scalar_data = torch.tensor(scalar_data, dtype=torch.float32) if scalar_data is not None else None
         self.labels = torch.tensor(labels, dtype=torch.long)
@@ -134,5 +135,5 @@ class SDSSDataModule:
             sampler=sampler,
             shuffle=(sampler is None and dataset.is_train),  # Shuffle if no sampler
             num_workers=self.config.num_workers,
-            pin_memory=True  # Speeds up data transfer to GPU
+            pin_memory=self.config.pin_memory
         )
