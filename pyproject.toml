@@ -16,4 +16,5 @@ dependencies = [
     "scipy-stubs>=1.17.1.3",
     "sdss-access>=3.0.10",
     "torch>=2.11.0",
+    "pennylane>=0.39.0",
 ]
