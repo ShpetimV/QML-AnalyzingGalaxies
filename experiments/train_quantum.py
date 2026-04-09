@@ -34,7 +34,7 @@ sys.path.insert(0, SCRIPT_DIR)
 
 from src.param_config import SDSSDataConfig
 from src.sdss_dataloader import SDSSDataModule
-from quantum_model import get_quantum_model
+from src.models.quantum_model import get_quantum_model
 
 
 # ---------------------------------------------------------------------------

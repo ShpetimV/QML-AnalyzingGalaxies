@@ -11,23 +11,19 @@ import matplotlib.pyplot as plt
 
 from src.param_config import SDSSDataConfig, TrainingConfig
 from src.sdss_dataloader import SDSSDataModule
+from src.models.classical_cnn import SpectraClassifier
 from src.training.trainer import SDSSPerformanceTrainer
 from src.training.metrics import SDSSMetricTracker
-from src.models.quantum_model import get_quantum_model
 
 # ---------------------------------------------------------------------------
-# Binary task config
+# Binary task config — same classes as quantum experiment
 # ---------------------------------------------------------------------------
 CLASS_A = "GALAXY_AGN_BROADLINE"      # → label 0
 CLASS_B = "QSO_STARBURST_BROADLINE"   # → label 1
 
-N_QUBITS = 4
-N_LAYERS = 4
-ENCODING = "amplitude"   # "angle" or "amplitude"
-
 
 # ---------------------------------------------------------------------------
-# Binary dataset wrapper
+# Binary dataset wrapper (identical to quantum version)
 # ---------------------------------------------------------------------------
 class BinarySubset(Dataset):
     """Filters an SDSSDataset to two classes and relabels them 0/1."""
@@ -80,9 +76,9 @@ def save_roc_pr_curves(y_true, y_probs, results_dir):
 
 def main():
     # 1. Setup Configuration & Data
-    data_config = SDSSDataConfig(num_workers=0)  # 0 workers safer for quantum
+    data_config = SDSSDataConfig()
     training_config = TrainingConfig()
-    results_dir = os.path.join("results_quantum_binary")
+    results_dir = "results_classical_binary"
     os.makedirs(results_dir, exist_ok=True)
 
     data_module = SDSSDataModule(data_config)
@@ -112,26 +108,24 @@ def main():
     sampler = WeightedRandomSampler(sample_weights, len(sample_weights))
 
     train_loader = DataLoader(train_ds, batch_size=data_config.batch_size,
-                              sampler=sampler, num_workers=0, pin_memory=False)
+                              sampler=sampler, num_workers=data_config.num_workers,
+                              pin_memory=True)
     val_loader   = DataLoader(val_ds, batch_size=data_config.batch_size,
-                              shuffle=False, num_workers=0, pin_memory=False)
+                              shuffle=False, num_workers=data_config.num_workers,
+                              pin_memory=True)
     test_loader  = DataLoader(test_ds, batch_size=data_config.batch_size,
-                              shuffle=False, num_workers=0, pin_memory=False)
+                              shuffle=False, num_workers=data_config.num_workers,
+                              pin_memory=True)
 
-    # 3. Initialize Quantum Model
-    model = get_quantum_model(
-        encoding=ENCODING,
+    # 3. Initialize Classical CNN (2 classes)
+    model = SpectraClassifier(
         num_classes=2,
-        n_qubits=N_QUBITS,
-        n_layers=N_LAYERS,
-        n_scalars=len(data_config.scalar_cols),
+        aux_features=len(data_config.scalar_cols),
         dropout=training_config.dropout
     )
 
     total_params = sum(p.numel() for p in model.parameters() if p.requires_grad)
-    q_params = model.q_weights.numel()
-    print(f"\nQuantum model: {ENCODING} encoding, {N_QUBITS} qubits, {N_LAYERS} layers")
-    print(f"  Total params: {total_params:,}  (quantum: {q_params}, classical: {total_params - q_params})")
+    print(f"\nClassical CNN: {total_params:,} params")
 
     # 4. Initialize Trainer & Metrics
     trainer = SDSSPerformanceTrainer(model, training_config)
@@ -159,10 +153,10 @@ def main():
     with torch.no_grad():
         for batch in test_loader:
             flux = batch['flux'].to(trainer.device)
-            scalars = batch['scalars'].to(trainer.device)
+            aux = batch['scalars'].to(trainer.device)
             labels = batch['label'].to(trainer.device)
 
-            logits = model(flux, scalars)
+            logits = model(flux, aux)
             probs = torch.softmax(logits, dim=1)
 
             all_preds.extend(logits.argmax(1).cpu().numpy())
@@ -184,7 +178,7 @@ def main():
     print(f"\nClassification Report:")
     print(classification_report(y_true, y_pred, target_names=binary_classes, digits=4))
     print(f"ROC AUC: {auc:.4f}  |  Avg Precision: {ap:.4f}")
-    print(f"\nBinary Quantum Complete! Results saved to ./{results_dir}")
+    print(f"\nClassical Binary Complete! Results saved to ./{results_dir}")
 
 
 if __name__ == "__main__":
