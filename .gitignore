@@ -5,3 +5,4 @@ sdss_spectra
 *.parquet
 *.gz
 subclass_merge_groups.json
+runs
