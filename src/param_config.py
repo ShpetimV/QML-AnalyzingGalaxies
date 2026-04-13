@@ -16,7 +16,7 @@ class SDSSDataConfig:
     ])
 
     # Dataset Splits
-    batch_size: int = 512
+    batch_size: int = 128
     train_size: float = 0.70
     val_size: float = 0.15
     test_size: float = 0.15
@@ -29,11 +29,11 @@ class SDSSDataConfig:
 
     # Augmentation Parameters
     use_augmentation: bool = True
-    noise_level: float = 0.02
-    star_max_shift: int = 2  # Tighter for stars
-    gal_max_shift: int = 10  # Larger for Galaxies/QSOs
-    max_smoothing_sigma: float = 1.0
-    mask_prob: float = 0.02
+    noise_level: float = 0.005
+    star_max_shift: int = 1  # Tighter for stars
+    gal_max_shift: int = 5  # Larger for Galaxies/QSOs
+    max_smoothing_sigma: float = 0.5
+    mask_prob: float = 0.005
     scale_range: tuple = (0.9, 1.1)
 
 
@@ -50,8 +50,8 @@ class TrainingConfig:
     se_reduction: int = 16
 
     batch_size: int = 128
-    epochs: int = 3
-    lr: float = 3e-4
+    epochs: int = 100
+    lr: float = 4e-3
     weight_decay: float = 1e-4
     max_grad_norm: float = 1.0
     num_workers: int = 4
