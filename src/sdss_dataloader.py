@@ -5,22 +5,22 @@ from torch.utils.data import Dataset, DataLoader, WeightedRandomSampler
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import LabelEncoder
 from src.param_config import SDSSDataConfig
+import math
 
 
 class SDSSDataset(Dataset):
     def __init__(self, flux_data, scalar_data, labels, class_names, config: SDSSDataConfig, is_train: bool = False):
         self.flux_data = torch.tensor(flux_data, dtype=torch.float32) if flux_data is not None else None
 
-        # # remove edge artifacts
-        # start_trim = 100
-        # end_trim = 100
-        #
-        # # TODO: add fixed length (with cutting and interpolation)
-        # if flux_data is not None:
-        #     cropped_flux = flux_data[:, start_trim:-end_trim]
-        #     self.flux_data = torch.tensor(cropped_flux, dtype=torch.float32)
-        # else:
-        #     self.flux_data = None
+        # remove edge artifacts
+        start_trim = 100
+        end_trim = 100
+
+        if flux_data is not None:
+            cropped_flux = flux_data[:, start_trim:-end_trim]
+            self.flux_data = torch.tensor(cropped_flux, dtype=torch.float32)
+        else:
+            self.flux_data = None
 
         self.scalar_data = torch.tensor(scalar_data, dtype=torch.float32) if scalar_data is not None else None
         self.labels = torch.tensor(labels, dtype=torch.long)
@@ -38,9 +38,9 @@ class SDSSDataset(Dataset):
         # 1. Redshift Shift (Class-Aware)
         # We simulate (1+z) by rolling pixels.
         max_s = self.config.star_max_shift if "STAR" in class_name else self.config.gal_max_shift
-        generator = np.random.default_rng(42)
-        shift = generator.standard_normal() * max_s
-        shift = int(np.clip(shift, -max_s, max_s))
+        # generator = np.random.default_rng(42)
+        shift = int(torch.randn(1).item() * max_s)
+        shift = max(-max_s, min(max_s, shift))  # Clip to max shift range
         x = torch.roll(x, shifts=shift, dims=0)
 
         # 2. Gaussian Noise
@@ -48,7 +48,8 @@ class SDSSDataset(Dataset):
         x = x + noise
 
         # 3. Flux Scaling
-        scale = generator.uniform(*self.config.scale_range)
+        low, high = self.config.scale_range
+        scale = low + torch.rand(1).item() * (high - low)
         x = x * scale
 
         # 4. Fiber Masking
@@ -56,7 +57,7 @@ class SDSSDataset(Dataset):
         x = x * mask.float()
 
         # 5. Smoothing (Gaussian blur)
-        sigma = generator.uniform(0, self.config.max_smoothing_sigma)
+        sigma = torch.rand(1).item() * self.config.max_smoothing_sigma
         if sigma > 0.1:
             kernel_size = int(sigma * 4) + 1
             if kernel_size % 2 == 0: kernel_size += 1
@@ -71,18 +72,35 @@ class SDSSDataset(Dataset):
 
     def __getitem__(self, idx):
         label = self.labels[idx]
-        flux = self.flux_data[idx]
+        flux = self.flux_data[idx].clone() # avoid in-place changes to original data
 
         # Normalize per-sample
         flux = (flux - flux.mean()) / (flux.std() + 1e-6)
 
+        # maybe for better normalization but probably not needded
+        # median = flux.median()
+        # q75, q25 = torch.quantile(flux, 0.75), torch.quantile(flux, 0.25)
+        # iqr = q75 - q25
+        # flux = (flux - median) / (iqr + 1e-6)
+        # flux = torch.clamp(flux, -10, 10)  # Clip extreme outliers
+
         if self.is_train and self.config.use_augmentation:
             flux = self.apply_augmentation(flux, label.item())
+
+        target_len = self.config.fixed_length
+        current_len = flux.shape[0]
+
+        # Handle fixed length by cropping or padding as needed
+        if current_len > target_len:
+            flux = flux[:target_len]  # Crop right
+        elif current_len < target_len:
+            pad_size = target_len - current_len
+            flux = torch.nn.functional.pad(flux, (0, pad_size), value=0.0)  # Pad right with 0
 
         # Return a dictionary. Your model loop picks what it needs.
         return {
             'flux': flux.unsqueeze(0),  # CNNs love [Channels, Length]
-            'scalars': self.scalar_data[idx] if self.scalar_data is not None else torch.tensor([]),
+            'scalars': torch.tensor([]), # Placeholder for scalar features if needed
             'label': label
         }
 

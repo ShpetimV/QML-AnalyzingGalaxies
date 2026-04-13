@@ -65,21 +65,21 @@ def check_pipeline():
     plt.show()
 
 
-    # # plot 5 others to see if they are different
-    # for i in range(1, 6):
-    #     # use random indices to check different samples
-    #     idx = np.random.randint(0, len(data_module.train_ds))
-    #     s1 = data_module.train_ds[idx]['flux']
-    #     s2 = data_module.train_ds[idx]['flux']
-    #
-    #     plt.figure(figsize=(12, 4))
-    #     plt.plot(s1[0].numpy(), label='Augmented Version A', alpha=0.8)
-    #     plt.plot(s2[0].numpy(), label='Augmented Version B', alpha=0.6)
-    #     plt.title(f"Augmentation Check: {data_module.classes[data_module.train_ds[idx]['label']]}")
-    #     plt.legend()
-    #     plt.xlabel("Pixel (Log-Lambda)")
-    #     plt.ylabel("Flux")
-    #     plt.show()
+    # plot 5 others to see if they are different
+    for i in range(1, 6):
+        # use random indices to check different samples
+        idx = np.random.randint(0, len(data_module.train_ds))
+        s1 = data_module.train_ds[idx]['flux']
+        s2 = data_module.train_ds[idx]['flux']
+
+        plt.figure(figsize=(12, 4))
+        plt.plot(s1[0].numpy(), label='Augmented Version A', alpha=0.8)
+        plt.plot(s2[0].numpy(), label='Augmented Version B', alpha=0.6)
+        plt.title(f"Augmentation Check: {data_module.classes[data_module.train_ds[idx]['label']]}")
+        plt.legend()
+        plt.xlabel("Pixel (Log-Lambda)")
+        plt.ylabel("Flux")
+        plt.show()
 
 
 if __name__ == "__main__":
