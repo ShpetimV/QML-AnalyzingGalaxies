@@ -18,8 +18,8 @@ from src.training.metrics import SDSSMetricTracker
 # ---------------------------------------------------------------------------
 # Binary task config — same classes as quantum experiment
 # ---------------------------------------------------------------------------
-CLASS_A = "GALAXY_AGN_BROADLINE"      # → label 0
-CLASS_B = "QSO_STARBURST_BROADLINE"   # → label 1
+CLASS_A = "STAR_BROWN_DWARF_L"      # → label 0
+CLASS_B = "STAR_M8"   # → label 1
 
 
 # ---------------------------------------------------------------------------
