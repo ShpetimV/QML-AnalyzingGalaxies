@@ -55,8 +55,18 @@ class SDSSPerformanceTrainer:
         if self.use_scaler:
             self.scaler = torch.amp.GradScaler('cuda')
 
-        timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
-        self.run_dir = os.path.join("runs", f"{run_name}_{timestamp}")
+        # temporary resume file path
+        self.resume_file = os.path.join("runs", f"resume_{run_name}.pt")
+
+        # Check if we are recovering from a crashed run
+        if os.path.exists(self.resume_file):
+            print(f"Found active resume state for {run_name}. Restoring directories...")
+            checkpoint_meta = torch.load(self.resume_file, map_location='cpu', weights_only=False)
+            self.run_dir = checkpoint_meta['run_dir']
+        else:
+            timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+            self.run_dir = os.path.join("runs", f"{run_name}_{timestamp}")
+
         self.checkpoint_dir = os.path.join(self.run_dir, "trained_models")
         self.plots_dir = os.path.join(self.run_dir, "plots")
 
@@ -96,9 +106,31 @@ class SDSSPerformanceTrainer:
         epochs_without_improvement = 0
         patience = 150
 
+        start_epoch = 1
+
+        # --- RESUME LOGIC ---
+        if os.path.exists(self.resume_file):
+            self.logger.info("Loading state from resume file to recover from interruption...")
+            checkpoint = torch.load(self.resume_file, map_location=self.device, weights_only=False)
+
+            self.model.load_state_dict(checkpoint['model_state_dict'])
+            optimizer.load_state_dict(checkpoint['optimizer_state_dict'])
+            scheduler.load_state_dict(checkpoint['scheduler_state_dict'])
+
+            if self.use_scaler and checkpoint['scaler_state_dict'] is not None:
+                self.scaler.load_state_dict(checkpoint['scaler_state_dict'])
+
+            start_epoch = checkpoint['epoch'] + 1
+            self.best_val_acc = checkpoint['best_val_acc']
+            self.history = checkpoint['history']
+            epochs_without_improvement = checkpoint['epochs_without_improvement']
+
+            self.logger.info(
+                f"Successfully resumed! Starting at epoch {start_epoch} (Best Val Acc was: {self.best_val_acc:.4f})")
+
         self.logger.info(f"Starting training for {epochs} epochs...")
 
-        for epoch in range(1, epochs + 1):
+        for epoch in range(start_epoch, epochs + 1):
             train_loss, train_acc = self._run_epoch(train_loader, optimizer, scheduler, criterion, train=True)
             val_loss, val_acc = self._run_epoch(val_loader, None, None, criterion, train=False)
 
@@ -119,6 +151,24 @@ class SDSSPerformanceTrainer:
                 self.logger.info(f" -> New Best Model Saved (Acc: {val_acc:.4f})")
             else:
                 epochs_without_improvement += 1
+
+            # --- SAFE STATE SAVING ---
+            resume_state = {
+                'run_dir': self.run_dir,
+                'epoch': epoch,
+                'model_state_dict': self.model.state_dict(),
+                'optimizer_state_dict': optimizer.state_dict(),
+                'scheduler_state_dict': scheduler.state_dict(),
+                'scaler_state_dict': self.scaler.state_dict() if self.use_scaler else None,
+                'best_val_acc': self.best_val_acc,
+                'history': self.history,
+                'epochs_without_improvement': epochs_without_improvement
+            }
+
+            # Save to a temporary file first, then replace. Prevents corruption if server dies during save.
+            tmp_file = self.resume_file + ".tmp"
+            torch.save(resume_state, tmp_file)
+            os.replace(tmp_file, self.resume_file)
 
             if epochs_without_improvement >= patience:
                 self.logger.warning(
@@ -143,7 +193,7 @@ class SDSSPerformanceTrainer:
                 aux = batch['scalars'].to(self.device, non_blocking=True)
 
                 if train:
-                    optimizer.zero_grad() # Clear gradients -> accurate tracking
+                    optimizer.zero_grad()  # Clear gradients -> accurate tracking
 
                 # --- MIXUP AUGMENTATION ---
                 # only during train and with 50% chance to keep some original samples for stability

@@ -88,5 +88,11 @@ def main():
 
     print("\nBaseline Complete! Results saved to ./results_baseline")
 
+    # cleanup the temporary resume state
+    if os.path.exists(trainer.resume_file):
+        os.remove(trainer.resume_file)
+        print("Cleaned up temporary resume state.")
+
+
 if __name__ == "__main__":
     main()
