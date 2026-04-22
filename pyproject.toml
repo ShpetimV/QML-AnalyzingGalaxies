@@ -17,16 +17,19 @@ dependencies = [
     "sdss-access>=3.0.10",
     "pennylane>=0.39.0",
     "torch>=2.6.0",
-]
-
-[tool.uv.sources]
-# This tells uv to use the CUDA index ONLY on Linux and Windows.
-# macOS will ignore this and fetch the normal version from PyPI.
-torch = [
-  { index = "pytorch-cu126", marker = "sys_platform == 'linux' or sys_platform == 'win32'" },
+    "visualtorch>=0.2.4",
+    "torchview>=0.2.7",
+    "torchviz>=0.0.3",
+    "onnxscript>=0.6.2",
 ]
 
 [[tool.uv.index]]
 name = "pytorch-cu126"
 url = "https://download.pytorch.org/whl/cu126"
 explicit = true
+
+# only install torch from the pytorch-cu126 index if not on macOS
+[tool.uv.sources]
+torch = [
+  { index = "pytorch-cu126", marker = "sys_platform != 'darwin'" },
+]
