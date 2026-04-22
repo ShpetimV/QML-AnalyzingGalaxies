@@ -16,7 +16,7 @@ DOWNLOAD_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'sdss_sp
 PROJECT_DIR = os.path.dirname(os.path.abspath(__file__))
 
 # Download Settings
-SAMPLES_PER_SUBCLASS = 10_000
+SAMPLES_PER_SUBCLASS = 50_000
 
 # Target Classes
 TARGET_CATEGORIES = {
@@ -175,7 +175,7 @@ def download_via_rsync(df, max_retries=5, batch_size=20000):
             ]
 
             # Retry loop just for this specific batch
-            for attempt in range(1, max_retries + 1):
+            for _ in range(1, max_retries + 1):
                 try:
                     process = subprocess.Popen(
                         cmd, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, text=True

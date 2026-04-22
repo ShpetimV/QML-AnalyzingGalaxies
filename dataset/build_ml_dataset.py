@@ -15,7 +15,10 @@ MAPPING_FILE = 'assets/subclass_merge_groups.json'
 FINAL_DATASET_FILE = 'ML_SDSS_CLEANED_DATA.parquet'
 
 MIN_SAMPLES = 250
-MAX_SAMPLES = 5_000
+MAX_SAMPLES = 25_000
+BATCH_SIZE = 50_000
+TEMP_DIR = os.path.join(PROJECT_DIR, 'temp_chunks')
+os.makedirs(TEMP_DIR, exist_ok=True)
 
 
 # ==========================================
@@ -77,9 +80,9 @@ def prepare_metadata(labels_path, reverse_map):
 
 def extract_flux_data(df, spectra_dir):
     """Iterates through FITS files and extracts 1D Flux arrays."""
-    flux_list = []
-    successful_indices = []
-
+    current_batch_flux = []
+    current_batch_indices = []
+    chunk_count = 0
     rows = df.to_dicts()
     for idx, row in tqdm(enumerate(rows), total=len(rows), desc="Extracting Spectra"):
         spec_file = row['SPEC_FILE']
@@ -99,17 +102,39 @@ def extract_flux_data(df, spectra_dir):
             with fits.open(file_path) as hdul:
                 # HDU 1 contains the 'flux' column in SDSS BOSS/eBOSS data
                 flux = hdul[1].data['flux'].astype(np.float32).tolist()
-                flux_list.append(flux)
-                successful_indices.append(idx)
+                current_batch_flux.append(flux)
+                current_batch_indices.append(idx)
         except Exception as e:
             print(f"\n[ERROR] {row['SPEC_FILE']}: {e}")
             continue
 
-    # Create final dataframe with only successful extractions
-    final_df = df[successful_indices]
-    final_df = final_df.with_columns(pl.Series("FLUX", flux_list))
+        # save chunk
+        if len(current_batch_flux) >= BATCH_SIZE:
+            save_chunk(df, current_batch_indices, current_batch_flux, chunk_count)
+            # free memory
+            current_batch_flux = []
+            current_batch_indices = []
+            chunk_count += 1
+
+    #save final chunk
+    if current_batch_flux:
+        save_chunk(df, current_batch_indices, current_batch_flux, chunk_count)
+
+    # final merge
+    print("\nMerging chunks...")
+    final_df = pl.read_parquet(f"{TEMP_DIR}/chunk_*.parquet")
+
+    # clean up temp files
+    for file in os.listdir(TEMP_DIR):
+        os.remove(os.path.join(TEMP_DIR, file))
 
     return final_df
+
+def save_chunk(original_df, indices, flux_data, chunk_id):
+    """Helper to write a portion of data to disk."""
+    chunk_df = original_df[indices]
+    chunk_df = chunk_df.with_columns(pl.Series("FLUX", flux_data))
+    chunk_df.write_parquet(f"{TEMP_DIR}/chunk_{chunk_id}.parquet")
 
 
 def print_data_analysis(pre_stats, valid_classes, final_df):
