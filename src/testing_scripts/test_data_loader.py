@@ -7,15 +7,15 @@ from src.sdss_dataloader import SDSSDataModule
 
 def check_pipeline():
     # 1. Initialize Config and Module
-    config = SDSSDataConfig(batch_size=32, num_workers=0)  # Set workers=0 for easier debugging
+    config = SDSSDataConfig(batch_size=256, num_workers=0)  # Set workers=0 for easier debugging
     data_module = SDSSDataModule(config)
 
     print("--- 1. Data Preparation ---")
     data_module.prepare_data()
 
     # 2. Get Loaders
-    train_loader = data_module.get_loader(data_module.train_ds, use_sampler=True)
-    val_loader = data_module.get_loader(data_module.val_ds)
+    train_loader = data_module.get_loader(data_module.train_ds)
+    # val_loader = data_module.get_loader(data_module.val_ds)
 
     print(f"Total Samples: {len(data_module.train_ds) + len(data_module.val_ds) + len(data_module.test_ds)}")
     print(f"Train batches: {len(train_loader)}")

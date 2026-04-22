@@ -17,7 +17,7 @@ def main():
     data_module.prepare_data()
 
     # Get loaders using the sampler for class balance
-    train_loader = data_module.get_loader(data_module.train_ds, use_sampler=True)
+    train_loader = data_module.get_loader(data_module.train_ds) # we dont use weighted random sampler instead we use focal loss to handle class imbalance
     val_loader = data_module.get_loader(data_module.val_ds)
     test_loader = data_module.get_loader(data_module.test_ds)
 

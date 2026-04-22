@@ -1,7 +1,7 @@
 import os
 import torch
 import torch.nn as nn
-from tqdm import tqdm
+import numpy as np
 from datetime import datetime
 from src.training.logger import get_global_logger
 
@@ -37,15 +37,23 @@ class SDSSPerformanceTrainer:
     def __init__(self, model, config, run_name="Baseline_CNN"):
 
         self.config = config
+        self.rng = np.random.default_rng(42)
 
-        if torch.backends.mps.is_available() and torch.backends.mps.is_built():
-            self.device = torch.device("mps")
-        elif torch.cuda.is_available():
+        if torch.cuda.is_available():
             self.device = torch.device("cuda")
+        elif torch.backends.mps.is_available() and torch.backends.mps.is_built():
+            self.device = torch.device("mps")
         else:
             self.device = torch.device("cpu")
 
+        print(f"Using device: {self.device}")
+
         self.model = model.to(self.device)
+
+        # Only use the scaler on CUDA (MPS handles it on its own)
+        self.use_scaler = self.device.type == 'cuda'
+        if self.use_scaler:
+            self.scaler = torch.amp.GradScaler('cuda')
 
         timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
         self.run_dir = os.path.join("runs", f"{run_name}_{timestamp}")
@@ -64,10 +72,20 @@ class SDSSPerformanceTrainer:
         self.history = {'train_loss': [], 'train_acc': [], 'val_loss': [], 'val_acc': []}
 
     def train(self, train_loader, val_loader, epochs, lr=3e-4, weight_decay=1e-4):
+
+        # Class Weights for Focal Loss (class imbalance handling)
+        train_labels = train_loader.dataset.full_labels[train_loader.dataset.indices]
+        class_counts = np.bincount(train_labels)
+        class_weights = 1.0 / (class_counts + 1e-5)
+        class_weights = class_weights / class_weights.sum() * len(class_counts)
+        class_weights_tensor = torch.tensor(class_weights, dtype=torch.float32).to(self.device)
+        self.logger.info("Calculated and applied inverse class weights to FocalLoss.")
+
         criterion = FocalLoss(
-            weight=None,
+            weight=class_weights_tensor,
             gamma=2.0
         )
+
         optimizer = torch.optim.AdamW(self.model.parameters(), lr=lr, weight_decay=weight_decay)
 
         # OneCycleLR is great for rapid baselines
@@ -76,7 +94,7 @@ class SDSSPerformanceTrainer:
         )
 
         epochs_without_improvement = 0
-        patience = 100
+        patience = 150
 
         self.logger.info(f"Starting training for {epochs} epochs...")
 
@@ -108,12 +126,14 @@ class SDSSPerformanceTrainer:
                 break
 
     def _run_epoch(self, loader, optimizer, scheduler, criterion, train=False):
+
         if train:
             self.model.train()
         else:
             self.model.eval()
 
-        total_loss, correct, total = 0.0, 0, 0
+        total_loss, total_samples = 0.0, 0
+        acc_correct, acc_samples = 0, 0
 
         with torch.set_grad_enabled(train):
             for batch in loader:
@@ -122,18 +142,59 @@ class SDSSPerformanceTrainer:
                 labels = batch['label'].to(self.device, non_blocking=True)
                 aux = batch['scalars'].to(self.device, non_blocking=True)
 
-                logits = self.model(flux, aux)
-                loss = criterion(logits, labels)
-
                 if train:
-                    optimizer.zero_grad()
-                    loss.backward()
-                    nn.utils.clip_grad_norm_(self.model.parameters(), max_norm=1.0)
-                    optimizer.step()
+                    optimizer.zero_grad() # Clear gradients -> accurate tracking
+
+                # --- MIXUP AUGMENTATION ---
+                # only during train and with 50% chance to keep some original samples for stability
+                amp_dtype = torch.bfloat16 if self.device.type == 'cuda' else torch.float32
+
+                with torch.autocast(device_type=self.device.type, dtype=amp_dtype):
+                    if train and torch.rand(1).item() > 0.5:
+                        alpha = 0.4  # Control strength of blending
+                        lam = float(self.rng.beta(alpha, alpha))
+                        rand_index = torch.randperm(flux.size(0)).to(self.device)
+
+                        # Blend the input flux and the auxiliary scalars
+                        mixed_flux = lam * flux + (1 - lam) * flux[rand_index]
+                        mixed_aux = lam * aux + (1 - lam) * aux[rand_index]
+
+                        logits = self.model(mixed_flux, mixed_aux)
+                        loss = lam * criterion(logits, labels) + (1 - lam) * criterion(logits, labels[rand_index])
+
+                        # dont track accuracy for mixed since it leads to unusable train acc
+                        total_loss += loss.item() * labels.size(0)
+                        total_samples += labels.size(0)
+                    else:
+                        # original forward pass
+                        logits = self.model(flux, aux)
+                        loss = criterion(logits, labels)
+
+                        # track loss AND accuracy
+                        total_loss += loss.item() * labels.size(0)
+                        total_samples += labels.size(0)
+
+                        acc_correct += (logits.argmax(1) == labels).sum().item()
+                        acc_samples += labels.size(0)
+
+                # --- CROSS-PLATFORM BACKWARD PASS ---
+                if train:
+                    if self.use_scaler:
+                        # Server (CUDA) Path: Unscale gradients before clipping
+                        self.scaler.scale(loss).backward()
+                        self.scaler.unscale_(optimizer)
+                        nn.utils.clip_grad_norm_(self.model.parameters(), max_norm=1.0)
+                        self.scaler.step(optimizer)
+                        self.scaler.update()
+                    else:
+                        # Mac (MPS) Path: Standard backward pass
+                        loss.backward()
+                        nn.utils.clip_grad_norm_(self.model.parameters(), max_norm=1.0)
+                        optimizer.step()
+
                     scheduler.step()
 
-                total_loss += loss.item() * labels.size(0)
-                correct += (logits.argmax(1) == labels).sum().item()
-                total += labels.size(0)
+        epoch_loss = total_loss / total_samples if total_samples > 0 else 0.0
+        epoch_acc = acc_correct / acc_samples if acc_samples > 0 else 0.0
 
-        return total_loss / total, correct / total
+        return epoch_loss, epoch_acc
