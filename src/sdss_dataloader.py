@@ -5,31 +5,28 @@ from torch.utils.data import Dataset, DataLoader, WeightedRandomSampler
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import LabelEncoder
 from src.param_config import SDSSDataConfig
-import math
+import pyarrow.parquet as pq
+import gc
 
 
 class SDSSDataset(Dataset):
-    def __init__(self, flux_data, scalar_data, labels, class_names, config: SDSSDataConfig, is_train: bool = False):
-        self.flux_data = torch.tensor(flux_data, dtype=torch.float32) if flux_data is not None else None
-
-        # remove edge artifacts
-        start_trim = 100
-        end_trim = 100
-
-        if flux_data is not None:
-            cropped_flux = flux_data[:, start_trim:-end_trim]
-            self.flux_data = torch.tensor(cropped_flux, dtype=torch.float32)
-        else:
-            self.flux_data = None
-
-        self.scalar_data = torch.tensor(scalar_data, dtype=torch.float32) if scalar_data is not None else None
-        self.labels = torch.tensor(labels, dtype=torch.long)
-        self.class_names = class_names  # Used to check for 'STAR' vs 'GALAXY'
+    def __init__(self, full_flux, full_scalars, full_labels, indices, class_names, config: SDSSDataConfig,
+                 is_train: bool = False):
+        # reference to dataset instead of copying into RAM
+        self.full_flux = full_flux
+        self.full_scalars = full_scalars
+        self.full_labels = full_labels
+        self.indices = indices
+        self.class_names = class_names
         self.config = config
         self.is_train = is_train
 
+        # edge artifacts
+        self.start_trim = 100
+        self.end_trim = 100
+
     def __len__(self):
-        return len(self.labels)
+        return len(self.indices)
 
     def apply_augmentation(self, x, label_idx):
         """Scientific Augmentation with Class-Aware Shifting"""
@@ -71,18 +68,15 @@ class SDSSDataset(Dataset):
         return x
 
     def __getitem__(self, idx):
-        label = self.labels[idx]
-        flux = self.flux_data[idx].clone() # avoid in-place changes to original data
+        real_idx = self.indices[idx]
+        flux_row = self.full_flux[real_idx]
+        cropped_flux = flux_row[self.start_trim: -self.end_trim]
 
-        # Normalize per-sample
+        flux = torch.tensor(cropped_flux, dtype=torch.float32)
+        label = torch.tensor(self.full_labels[real_idx], dtype=torch.long)
+
+        # normalize
         flux = (flux - flux.mean()) / (flux.std() + 1e-6)
-
-        # maybe for better normalization but probably not needded
-        # median = flux.median()
-        # q75, q25 = torch.quantile(flux, 0.75), torch.quantile(flux, 0.25)
-        # iqr = q75 - q25
-        # flux = (flux - median) / (iqr + 1e-6)
-        # flux = torch.clamp(flux, -10, 10)  # Clip extreme outliers
 
         if self.is_train and self.config.use_augmentation:
             flux = self.apply_augmentation(flux, label.item())
@@ -90,17 +84,16 @@ class SDSSDataset(Dataset):
         target_len = self.config.fixed_length
         current_len = flux.shape[0]
 
-        # Handle fixed length by cropping or padding as needed
         if current_len > target_len:
-            flux = flux[:target_len]  # Crop right
+            flux = flux[:target_len]
         elif current_len < target_len:
             pad_size = target_len - current_len
-            flux = torch.nn.functional.pad(flux, (0, pad_size), value=0.0)  # Pad right with 0
+            flux = torch.nn.functional.pad(flux, (0, pad_size), value=0.0)
 
-        # Return a dictionary. Your model loop picks what it needs.
+        # no scalars for now -> add them maybe later for multimodal experiments
         return {
-            'flux': flux.unsqueeze(0),  # CNNs love [Channels, Length]
-            'scalars': torch.tensor([]), # Placeholder for scalar features if needed
+            'flux': flux.unsqueeze(0),
+            'scalars': torch.tensor([]),
             'label': label
         }
 
@@ -111,15 +104,49 @@ class SDSSDataModule:
         self.label_encoder = LabelEncoder()
 
     def prepare_data(self):
-        df = pl.read_parquet(self.config.parquet_path)
+        print("Initializing memory-safe data loading...")
 
-        # Encoding and storing class names for the augmentation logic
-        labels = self.label_encoder.fit_transform(df[self.config.target_col].to_numpy())
+        parquet_file = pq.ParquetFile(self.config.parquet_path)
+        num_samples = parquet_file.metadata.num_rows
+
+        first_row = pl.read_parquet(self.config.parquet_path, n_rows=1)
+        seq_length = len(first_row['FLUX'][0])
+
+        print(f"Pre-allocating {num_samples} samples x {seq_length} length (~10.5GB)...")
+        flux_data = np.empty((num_samples, seq_length), dtype=np.float32)
+
+        print("Streaming batches into NumPy (avoids RAM spike)...")
+        current_idx = 0
+        # process in chunks of 50,000 rows to keep RAM usage low
+        for batch in parquet_file.iter_batches(batch_size=50000, columns=['FLUX']):
+            # convert batch to Polars for easy extraction of the list column
+            temp_df = pl.from_arrow(batch)
+
+            flux_slice = np.vstack(temp_df['FLUX'].to_numpy())
+            batch_len = len(flux_slice)
+            flux_data[current_idx: current_idx + batch_len] = flux_slice
+
+            current_idx += batch_len
+            print(f" Loaded {current_idx}/{num_samples} samples...")
+
+            # cleanup RAM
+            del temp_df
+            del flux_slice
+            gc.collect()
+
+        # load labels and scalars separately (minimal RAM usage)
+        print("Loading labels and scalars...")
+        full_df = pl.read_parquet(self.config.parquet_path, columns=[self.config.target_col] + self.config.scalar_cols)
+
+        labels = self.label_encoder.fit_transform(full_df[self.config.target_col].to_numpy())
         self.classes = self.label_encoder.classes_
         self.num_classes = len(self.classes)
+        scalar_data = full_df.select(self.config.scalar_cols).to_numpy().astype(np.float32)
 
-        flux_data = np.vstack(df['FLUX'].to_numpy())
-        scalar_data = df.select(self.config.scalar_cols).to_numpy()
+        # cleanup RAM
+        del full_df
+        gc.collect()
+        print("Splitting datasets...")
 
         indices = np.arange(len(labels))
         train_val_idx, test_idx = train_test_split(indices, test_size=self.config.test_size, stratify=labels,
@@ -129,18 +156,17 @@ class SDSSDataModule:
         train_idx, val_idx = train_test_split(train_val_idx, test_size=val_ratio, stratify=labels[train_val_idx],
                                               random_state=self.config.random_state)
 
-        # Build datasets with the class list passed in
-        self.train_ds = SDSSDataset(flux_data[train_idx], scalar_data[train_idx], labels[train_idx], self.classes,
-                                    self.config, is_train=True)
-        self.val_ds = SDSSDataset(flux_data[val_idx], scalar_data[val_idx], labels[val_idx], self.classes, self.config,
-                                  is_train=False)
-        self.test_ds = SDSSDataset(flux_data[test_idx], scalar_data[test_idx], labels[test_idx], self.classes,
-                                   self.config, is_train=False)
+        print("Initializing Zero-Copy Datasets...")
+        self.train_ds = SDSSDataset(flux_data, scalar_data, labels, train_idx, self.classes, self.config, is_train=True)
+        self.val_ds = SDSSDataset(flux_data, scalar_data, labels, val_idx, self.classes, self.config, is_train=False)
+        self.test_ds = SDSSDataset(flux_data, scalar_data, labels, test_idx, self.classes, self.config, is_train=False)
+
+        print(f"Data prepared: {len(self.train_ds)} train, {len(self.val_ds)} val, {len(self.test_ds)} test samples.")
 
     def get_loader(self, dataset, use_sampler=False):
         sampler = None
         if use_sampler:
-            # Weighted Sampler logic to balance 250 vs 5000 samples
+            # Weighted Sampler logic to balance 250 vs 25_000 samples
             labels = dataset.labels.numpy()
             class_sample_count = np.array([len(np.nonzero(labels == t)[0]) for t in np.unique(labels)])
             weight = 1. / class_sample_count
