@@ -16,7 +16,7 @@ class SDSSDataConfig:
     ])
 
     # Dataset Splits
-    batch_size: int = 128
+    batch_size: int = 1024
     train_size: float = 0.70
     val_size: float = 0.15
     test_size: float = 0.15
@@ -24,8 +24,8 @@ class SDSSDataConfig:
     random_state: int = 42
 
     # Performance
-    num_workers: int = 8
-    pin_memory: bool = False
+    num_workers: int = 6
+    pin_memory: bool = True
 
     # Augmentation Parameters
     use_augmentation: bool = True
@@ -49,12 +49,10 @@ class TrainingConfig:
     dropout: float = 0.3
     se_reduction: int = 16
 
-    batch_size: int = 128
-    epochs: int = 100
-    lr: float = 4e-3
+    epochs: int = 150
+    lr: float = 1e-3
     weight_decay: float = 1e-4
     max_grad_norm: float = 1.0
-    num_workers: int = 4
 
 
 @dataclass
