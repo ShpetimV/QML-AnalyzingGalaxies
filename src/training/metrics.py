@@ -161,12 +161,26 @@ class SDSSMetricTracker:
             report_lines.append(f"      {c2} predicted as {c1}: {c2_to_c1 * 100:.1f}%")
 
         # C. Find "Black Holes" (Highest False Positives / Sinks)
-        report_lines.append("\n--- 3. THE BLACK HOLES (FALSE POSITIVE SINKS) ---")
-        report_lines.append("Classes that the model defaults to when it is uncertain.")
-        false_positives = cm.sum(axis=0) - np.diag(cm)
-        sink_idx = np.argsort(false_positives)[::-1]
-        for idx in sink_idx[:10]:
-            report_lines.append(f" - {class_names[idx]:<20}: Absorbed {false_positives[idx]} false predictions.")
+        report_lines.append("\n--- 3. THE BLACK HOLES (LOWEST PRECISION / HIGH FALSE POSITIVES) ---")
+        report_lines.append("Classes the model guesses frequently, but is usually wrong when it does.")
+
+        col_sums = cm.sum(axis=0)
+        true_positives = np.diag(cm)
+        precisions = np.divide(true_positives.astype(float), col_sums, out=np.zeros_like(true_positives, dtype=float),
+                               where=col_sums != 0)
+        predicted_mask = col_sums > 0
+        black_hole_idx = np.argsort(precisions)
+
+        for idx in black_hole_idx:
+            if predicted_mask[idx]:
+                fp_count = col_sums[idx] - true_positives[idx]
+                report_lines.append(
+                    f" - {class_names[idx]:<20}: {precisions[idx] * 100:.1f}% precision ({fp_count} false positives absorbed)")
+
+            # Stop after top 10
+            if len(report_lines) > report_lines.index(
+                    "\n--- 3. THE BLACK HOLES (LOWEST PRECISION / HIGH FALSE POSITIVES) ---") + 11:
+                break
 
         # D. Detect Complex Clusters (Triplets/Groups)
         report_lines.append("\n--- 4. PROPOSED QML SUB-PROBLEMS (CLUSTERS) ---")
