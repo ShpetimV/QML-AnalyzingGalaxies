@@ -22,10 +22,10 @@ class SEBlock(nn.Module):
 class SEResidualBottleneck1D(nn.Module):
     """Deep Bottleneck ResNet Block with Dilated Convolutions."""
 
-    def __init__(self, in_channels, out_channels, kernel_size=3, stride=1, dilation=1, dropout=0.1, reduction=4):
+    def __init__(self, in_channels, out_channels, kernel_size=3, stride=1, dilation=1, dropout=0.1, reduction=2):
         super().__init__()
 
-        # The "Bottleneck" shrinks the channels by a factor of 4
+        # the bottleneck shrinks the channels by a factor of 4
         mid_channels = out_channels // reduction
 
         # Padding formula for dilated convolutions to keep array shapes aligned
@@ -66,9 +66,9 @@ class SEResidualBottleneck1D(nn.Module):
 
 class MultiScaleStem(nn.Module):
     """Initial convolutional stem that captures multi-scale features from the raw spectrum."""
-    def __init__(self, in_channels=1, out_channels=32):
+    def __init__(self, in_channels=1, out_channels=128):
         super().__init__()
-        # Parallel convolutions looking at narrow, medium, and wide features
+        # parallel convolutions looking at narrow, medium, and wide features
         self.conv_narrow = nn.Conv1d(in_channels, out_channels//3, kernel_size=5, stride=2, padding=2, bias=False)
         self.conv_medium = nn.Conv1d(in_channels, out_channels//3, kernel_size=15, stride=2, padding=7, bias=False)
         self.conv_wide   = nn.Conv1d(in_channels, out_channels - 2*(out_channels//3), kernel_size=31, stride=2, padding=15, bias=False)
@@ -86,16 +86,16 @@ class MultiScaleStem(nn.Module):
 class SpectraClassifier(nn.Module):
     """Refined 1D SE-ResNet for SDSS classification."""
 
-    def __init__(self, num_classes=3, aux_features=6, dropout=0.3):
+    def __init__(self, num_classes=3, aux_features=6, dropout=0.4):
         super().__init__()
 
         # Initial feature extraction (Stem)
-        self.stem = MultiScaleStem(in_channels=1, out_channels=32)
+        self.stem = MultiScaleStem(in_channels=1, out_channels=64) # maybe use 128
 
         # SE-Residual Blocks
 
-        # Stage 1 (32 -> 64) - 2 Blocks
-        self.block1a = SEResidualBottleneck1D(32, 64, stride=2)
+        # Stage 1 (64 -> 64) - 2 Blocks
+        self.block1a = SEResidualBottleneck1D(64, 64, stride=2)
         self.block1b = SEResidualBottleneck1D(64, 64, dilation=2)
 
         # Stage 2 (64 -> 128) - 3 Blocks
@@ -116,13 +116,17 @@ class SpectraClassifier(nn.Module):
         # Stage 5 (512 -> 1024) - 1 Block (Keep it brief before Attention)
         self.block5a = SEResidualBottleneck1D(512, 1024, stride=2)
 
-        # Powerboost: Add a multi-head attention layer after the convolutional blocks to capture long-range dependencies
-        self.attention = nn.MultiheadAttention(
-            embed_dim=1024,
-            num_heads=8,
-            batch_first=True,
-            dropout=0.1
+        encoder_layer = nn.TransformerEncoderLayer(
+            d_model=1024,
+            nhead=8,
+            dim_feedforward=2048,
+            dropout=0.25,
+            activation="gelu",
+            batch_first=True
         )
+
+        # multiple layers of self-attention to capture long-range dependencies in the spectrum
+        self.attention = nn.TransformerEncoder(encoder_layer, num_layers=2)
 
         self.gap = nn.AdaptiveAvgPool1d(1)
 
@@ -156,9 +160,10 @@ class SpectraClassifier(nn.Module):
 
         x = x.permute(0, 2, 1) # needed since MultiheadAttention expects (B, L, C)
 
-        attn_out, _ = self.attention(x, x, x)
+        attn_out= self.attention(x)
 
         x = x + attn_out
+
         x = x.permute(0, 2, 1)
 
         x = self.gap(x).squeeze(2)
