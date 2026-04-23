@@ -16,7 +16,7 @@ class SDSSDataConfig:
     ])
 
     # Dataset Splits
-    batch_size: int = 1024
+    batch_size: int = 256
     train_size: float = 0.70
     val_size: float = 0.15
     test_size: float = 0.15
@@ -41,15 +41,12 @@ class SDSSDataConfig:
 class TrainingConfig:
     checkpoint_dir: str = './checkpoints'
     results_dir_baseline: str = './results_baseline'
-    train_split: float = 0.80
-    val_split: float = 0.10
-    test_split: float = 0.10
     random_state: int = 42
 
     dropout: float = 0.3
     se_reduction: int = 16
 
-    epochs: int = 150
+    epochs: int = 300
     lr: float = 1e-3
     weight_decay: float = 1e-4
     max_grad_norm: float = 1.0

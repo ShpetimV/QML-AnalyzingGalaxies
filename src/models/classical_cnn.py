@@ -120,13 +120,16 @@ class SpectraClassifier(nn.Module):
             d_model=1024,
             nhead=8,
             dim_feedforward=2048,
-            dropout=0.25,
+            dropout=0.15,
             activation="gelu",
             batch_first=True
         )
 
         # multiple layers of self-attention to capture long-range dependencies in the spectrum
         self.attention = nn.TransformerEncoder(encoder_layer, num_layers=2)
+
+        # learnable positional embeddings to help the attention mechanism understand the order of spectral features
+        self.pos_embed = nn.Parameter(torch.randn(1, 64, 1024) * 0.02)
 
         self.gap = nn.AdaptiveAvgPool1d(1)
 
@@ -159,6 +162,8 @@ class SpectraClassifier(nn.Module):
         x = self.block5a(x)
 
         x = x.permute(0, 2, 1) # needed since MultiheadAttention expects (B, L, C)
+
+        x = x + self.pos_embed[:, :x.size(1), :] # Add positional embeddings
 
         attn_out= self.attention(x)
 

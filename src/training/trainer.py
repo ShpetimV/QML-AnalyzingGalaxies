@@ -9,22 +9,30 @@ from src.training.logger import get_global_logger
 class FocalLoss(nn.Module):
     def __init__(self, weight=None, gamma=2.0, label_smoothing=0.0, reduction='mean'):
         super(FocalLoss, self).__init__()
-        self.weight = weight  # Class weights
+        # Ensure weight is a tensor if provided
+        self.register_buffer('weight', weight)
         self.gamma = gamma
         self.label_smoothing = label_smoothing
         self.reduction = reduction
 
     def forward(self, inputs, targets):
-        # Calculate standard cross entropy
-        ce_loss = nn.functional.cross_entropy(inputs, targets, weight=self.weight, reduction='none',
-                                              label_smoothing=self.label_smoothing)
+        # 1. Calculate unweighted cross entropy to get "clean" pt
+        ce_loss = nn.functional.cross_entropy(
+            inputs, targets, reduction='none', label_smoothing=self.label_smoothing
+        )
 
-        # Get the probabilities of the true classes
+        # 2. Get the probabilities (pt)
         pt = torch.exp(-ce_loss)
 
-        # Apply the focal loss formula
+        # 3. Calculate the focal modulation
         focal_loss = ((1 - pt) ** self.gamma) * ce_loss
 
+        # 4. Apply class weights manually
+        if self.weight is not None:
+            at = self.weight.gather(0, targets.data)
+            focal_loss = focal_loss * at
+
+        # 5. Reduction
         if self.reduction == 'mean':
             return focal_loss.mean()
         elif self.reduction == 'sum':
@@ -85,7 +93,8 @@ class SDSSPerformanceTrainer:
 
         # Class Weights for Focal Loss (class imbalance handling)
         train_labels = train_loader.dataset.full_labels[train_loader.dataset.indices]
-        class_counts = np.bincount(train_labels)
+        num_classes = self.model.classifier[-1].out_features
+        class_counts = np.bincount(train_labels, minlength=num_classes)
         class_weights = 1.0 / (class_counts + 1e-5)
         class_weights = class_weights / class_weights.sum() * len(class_counts)
         class_weights_tensor = torch.tensor(class_weights, dtype=torch.float32).to(self.device)
