@@ -98,6 +98,29 @@ class SDSSDataset(Dataset):
         }
 
 
+class BinarySubset(Dataset):
+    """Filters an SDSSDataset to two classes and relabels them 0/1."""
+
+    def __init__(self, base_dataset, class_a_idx, class_b_idx):
+        mask = (base_dataset.labels == class_a_idx) | (base_dataset.labels == class_b_idx)
+        self.indices = torch.where(mask)[0]
+        self.base = base_dataset
+        self.class_a_idx = class_a_idx
+        self.class_b_idx = class_b_idx
+
+        old_labels = base_dataset.labels[self.indices]
+        self.labels = (old_labels == class_b_idx).long()
+        self.is_train = base_dataset.is_train
+
+    def __len__(self):
+        return len(self.indices)
+
+    def __getitem__(self, idx):
+        sample = self.base[self.indices[idx].item()]
+        sample['label'] = self.labels[idx]
+        return sample
+
+
 class SDSSDataModule:
     def __init__(self, config: SDSSDataConfig):
         self.config = config
