@@ -1,11 +1,17 @@
 import os
-import torch
+import itertools
+
 import numpy as np
 import matplotlib.pyplot as plt
-import itertools
-from sklearn.metrics import confusion_matrix
-from src.param_config import VisualConfig
 import pandas as pd
+from sklearn.metrics import (
+    confusion_matrix,
+    roc_curve,
+    roc_auc_score,
+    precision_recall_curve,
+    average_precision_score,
+)
+from src.param_config import VisualConfig
 
 
 class SDSSMetricTracker:
@@ -108,6 +114,42 @@ class SDSSMetricTracker:
         plt.tight_layout()
         plt.savefig(os.path.join(self.results_dir, "per_class_accuracy.png"), facecolor=self.bg_color)
         plt.close()
+
+    def plot_roc_pr_curves(self, y_true, y_probs):
+        """ROC and Precision-Recall curves for binary classification."""
+        fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(14, 5))
+        fig.patch.set_facecolor(self.bg_color)
+
+        fpr, tpr, _ = roc_curve(y_true, y_probs)
+        auc = roc_auc_score(y_true, y_probs)
+        ax1.set_facecolor(self.bg_color)
+        ax1.plot(fpr, tpr, color=self.vis_config.accent_color, linewidth=2, label=f'AUC = {auc:.4f}')
+        ax1.plot([0, 1], [0, 1], 'k--', alpha=0.3, label='Random')
+        ax1.set_xlabel('False Positive Rate', color='#888888')
+        ax1.set_ylabel('True Positive Rate', color='#888888')
+        ax1.set_title('ROC Curve', color='white', fontsize=14)
+        ax1.tick_params(colors='#888888')
+        ax1.legend()
+        for spine in ax1.spines.values():
+            spine.set_edgecolor(self.grid_color)
+
+        precision, recall, _ = precision_recall_curve(y_true, y_probs)
+        ap = average_precision_score(y_true, y_probs)
+        ax2.set_facecolor(self.bg_color)
+        ax2.plot(recall, precision, color=self.vis_config.warning_color, linewidth=2, label=f'AP = {ap:.4f}')
+        ax2.set_xlabel('Recall', color='#888888')
+        ax2.set_ylabel('Precision', color='#888888')
+        ax2.set_title('Precision-Recall Curve', color='white', fontsize=14)
+        ax2.tick_params(colors='#888888')
+        ax2.legend()
+        for spine in ax2.spines.values():
+            spine.set_edgecolor(self.grid_color)
+
+        plt.tight_layout()
+        path = os.path.join(self.results_dir, "roc_pr_curves.png")
+        plt.savefig(path, dpi=150, facecolor=self.bg_color)
+        plt.close()
+        return auc, ap
 
     def analyze_confusion_matrix(self, y_true, y_pred, class_names, split_name='test'):
         """

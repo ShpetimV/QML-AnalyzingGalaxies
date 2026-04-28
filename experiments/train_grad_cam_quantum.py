@@ -30,8 +30,8 @@ import matplotlib.pyplot as plt
 from torch.utils.data import DataLoader
 
 from src.param_config import SDSSDataConfig
-from src.sdss_dataloader import SDSSDataModule
-from src.models.quantum_model import get_quantum_model
+from src.sdss_dataloader import SDSSDataModule, BinarySubset
+from src.models.quantum_model import AngleEncodingClassifier
 
 
 # ---------------------------------------------------------------------------
@@ -42,32 +42,10 @@ CLASS_B = "QSO_STARBURST_BROADLINE"
 
 N_QUBITS = 4
 N_LAYERS = 4
-ENCODING = "amplitude"
 
-CHECKPOINT_PATH = "best_baseline_model.pt"   # default save name from trainer
+CHECKPOINT_PATH = "best_baseline_model.pt"
 RESULTS_DIR = "results_quantum_binary"
 os.makedirs(RESULTS_DIR, exist_ok=True)
-
-
-# ---------------------------------------------------------------------------
-# Binary subset (same as training script)
-# ---------------------------------------------------------------------------
-class BinarySubset(torch.utils.data.Dataset):
-    def __init__(self, base_dataset, class_a_idx, class_b_idx):
-        mask = (base_dataset.labels == class_a_idx) | (base_dataset.labels == class_b_idx)
-        self.indices = torch.where(mask)[0]
-        self.base = base_dataset
-        old_labels = base_dataset.labels[self.indices]
-        self.labels = (old_labels == class_b_idx).long()
-        self.is_train = base_dataset.is_train
-
-    def __len__(self):
-        return len(self.indices)
-
-    def __getitem__(self, idx):
-        sample = self.base[self.indices[idx].item()]
-        sample['label'] = self.labels[idx]
-        return sample
 
 
 # ---------------------------------------------------------------------------
@@ -98,7 +76,7 @@ class GradCAM1D:
         """
         Args:
             flux:         [1, 1, L]
-            scalars:      [1, n_scalars]
+            scalars:      ignored (quantum model processes flux only)
             target_class: int (0 or 1)
         Returns:
             cam: [L] — Grad-CAM heatmap upsampled to input length
@@ -180,12 +158,10 @@ def main():
 
     # --- Load model ---
     print(f"Loading model from {args.checkpoint}...")
-    model = get_quantum_model(
-        encoding=ENCODING,
+    model = AngleEncodingClassifier(
         num_classes=2,
         n_qubits=N_QUBITS,
         n_layers=N_LAYERS,
-        n_scalars=len(data_config.scalar_cols),
     )
     state = torch.load(args.checkpoint, map_location=device)
     model.load_state_dict(state)
@@ -240,7 +216,7 @@ def main():
 
     # --- Plot ---
     fig, axes = plt.subplots(4, 1, figsize=(16, 16), sharex=True)
-    fig.suptitle(f"Spectral attention — {ENCODING} quantum model ({N_QUBITS}q, {N_LAYERS}L)",
+    fig.suptitle(f"Spectral attention — angle quantum model ({N_QUBITS}q, {N_LAYERS}L)",
                  fontsize=14, y=0.98)
 
     for cls_idx, cls_name in enumerate(class_names):
@@ -290,7 +266,7 @@ def main():
 
     axes[-1].set_xlabel('Spectral pixel (log-λ)')
     plt.tight_layout()
-    path = os.path.join(RESULTS_DIR, f"gradcam_saliency_{ENCODING}_{N_QUBITS}q.png")
+    path = os.path.join(RESULTS_DIR, f"gradcam_saliency_angle_{N_QUBITS}q.png")
     plt.savefig(path, dpi=150)
     plt.close()
     print(f"\nSaved → {path}")

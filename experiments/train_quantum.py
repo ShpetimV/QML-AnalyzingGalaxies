@@ -4,12 +4,9 @@ Training Script for Quantum SDSS Spectral Classifiers
 Uses the existing SDSSDataModule with augmentation + cropping,
 reading from ML_SDSS_CLEANED_DATA.parquet.
 
-Supports both angle and amplitude encoding via CLI args.
-
 Usage (from project root):
-    uv run python models/train_quantum.py --encoding angle
-    uv run python models/train_quantum.py --encoding amplitude
-    uv run python models/train_quantum.py --encoding angle --n_qubits 10 --n_layers 6
+    uv run python experiments/train_quantum.py
+    uv run python experiments/train_quantum.py --n_qubits 10 --n_layers 6
 """
 
 import os
@@ -34,7 +31,7 @@ sys.path.insert(0, SCRIPT_DIR)
 
 from src.param_config import SDSSDataConfig
 from src.sdss_dataloader import SDSSDataModule
-from src.models.quantum_model import get_quantum_model
+from src.models.quantum_model import AngleEncodingClassifier
 
 
 # ---------------------------------------------------------------------------
@@ -175,9 +172,6 @@ def save_confusion_matrix(y_true, y_pred, class_names, encoding_name):
 
 def main():
     parser = argparse.ArgumentParser(description="Train Quantum SDSS Classifier")
-    parser.add_argument("--encoding", type=str, default="angle",
-                        choices=["angle", "amplitude"],
-                        help="Quantum encoding strategy")
     parser.add_argument("--n_qubits", type=int, default=8,
                         help="Number of qubits (default: 8)")
     parser.add_argument("--n_layers", type=int, default=4,
@@ -194,7 +188,7 @@ def main():
                         help="Use only N samples for fast experimentation (0 = full dataset)")
     args = parser.parse_args()
 
-    encoding_name = f"{args.encoding}_{args.n_qubits}q_{args.n_layers}L"
+    encoding_name = f"angle_{args.n_qubits}q_{args.n_layers}L"
     print(f"\n{'='*60}")
     print(f"  Quantum SDSS Classifier — {encoding_name}")
     print(f"{'='*60}\n")
@@ -234,23 +228,19 @@ def main():
 
     num_classes = dm.num_classes
     class_names = list(dm.classes)
-    n_scalars   = len(config.scalar_cols)
 
     print(f"  Classes ({num_classes}): {class_names}")
     print(f"  Train: {len(dm.train_ds)}  Val: {len(dm.val_ds)}  Test: {len(dm.test_ds)}")
-    print(f"  Scalars: {config.scalar_cols}")
     print(f"  Batch size: {args.batch_size}")
 
     # ------------------------------------------------------------------
     # 2. Model
     # ------------------------------------------------------------------
-    print(f"\n[2/5] Building {args.encoding} encoding model...")
-    model = get_quantum_model(
-        encoding=args.encoding,
+    print(f"\n[2/5] Building angle encoding model...")
+    model = AngleEncodingClassifier(
         num_classes=num_classes,
         n_qubits=args.n_qubits,
         n_layers=args.n_layers,
-        n_scalars=n_scalars,
         dropout=args.dropout,
     )
     model = model.to(DEVICE)
