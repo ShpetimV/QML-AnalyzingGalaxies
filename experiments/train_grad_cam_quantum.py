@@ -30,7 +30,7 @@ import matplotlib.pyplot as plt
 from torch.utils.data import DataLoader
 
 from src.param_config import SDSSDataConfig
-from src.sdss_dataloader import SDSSDataModule, BinarySubset
+from src.sdss_dataloader import SDSSDataModule
 from src.models.quantum_model import AngleEncodingClassifier
 
 
@@ -145,16 +145,11 @@ def main():
     print("Loading data...")
     data_config = SDSSDataConfig(num_workers=0)
     dm = SDSSDataModule(data_config)
-    dm.prepare_data()
+    dm.prepare_data(classes=[CLASS_A, CLASS_B])
 
-    all_classes = list(dm.classes)
-    idx_a = all_classes.index(CLASS_A)
-    idx_b = all_classes.index(CLASS_B)
+    test_loader = DataLoader(dm.test_ds, batch_size=1, shuffle=False)
 
-    test_ds = BinarySubset(dm.test_ds, idx_a, idx_b)
-    test_loader = DataLoader(test_ds, batch_size=1, shuffle=False)
-
-    print(f"Test set: {len(test_ds)} samples  ({CLASS_A} vs {CLASS_B})")
+    print(f"Test set: {len(dm.test_ds)} samples  ({CLASS_A} vs {CLASS_B})")
 
     # --- Load model ---
     print(f"Loading model from {args.checkpoint}...")
