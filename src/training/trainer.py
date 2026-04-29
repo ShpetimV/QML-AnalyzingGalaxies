@@ -92,9 +92,8 @@ class SDSSPerformanceTrainer:
     def train(self, train_loader, val_loader, epochs, lr=3e-4, weight_decay=1e-4):
 
         # Class Weights for Focal Loss (class imbalance handling)
-        train_labels = train_loader.dataset.full_labels[train_loader.dataset.indices]
-        num_classes = self.model.classifier[-1].out_features
-        class_counts = np.bincount(train_labels, minlength=num_classes)
+        train_labels = train_loader.dataset.labels.numpy()
+        class_counts = np.bincount(train_labels)
         class_weights = 1.0 / (class_counts + 1e-5)
         class_weights = class_weights / class_weights.sum() * len(class_counts)
         class_weights_tensor = torch.tensor(class_weights, dtype=torch.float32).to(self.device)

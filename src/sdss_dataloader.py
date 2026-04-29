@@ -25,6 +25,10 @@ class SDSSDataset(Dataset):
         self.start_trim = 100
         self.end_trim = 100
 
+    @property
+    def labels(self):
+        return torch.tensor(self.full_labels[self.indices], dtype=torch.long)
+
     def __len__(self):
         return len(self.indices)
 
@@ -98,35 +102,18 @@ class SDSSDataset(Dataset):
         }
 
 
-class BinarySubset(Dataset):
-    """Filters an SDSSDataset to two classes and relabels them 0/1."""
-
-    def __init__(self, base_dataset, class_a_idx, class_b_idx):
-        mask = (base_dataset.labels == class_a_idx) | (base_dataset.labels == class_b_idx)
-        self.indices = torch.where(mask)[0]
-        self.base = base_dataset
-        self.class_a_idx = class_a_idx
-        self.class_b_idx = class_b_idx
-
-        old_labels = base_dataset.labels[self.indices]
-        self.labels = (old_labels == class_b_idx).long()
-        self.is_train = base_dataset.is_train
-
-    def __len__(self):
-        return len(self.indices)
-
-    def __getitem__(self, idx):
-        sample = self.base[self.indices[idx].item()]
-        sample['label'] = self.labels[idx]
-        return sample
-
 
 class SDSSDataModule:
     def __init__(self, config: SDSSDataConfig):
         self.config = config
         self.label_encoder = LabelEncoder()
 
-    def prepare_data(self):
+    def prepare_data(self, classes=None):
+        """
+        classes: optional list of class name strings to filter to, e.g. ['STAR_BROWN_DWARF_L', 'STAR_M8'].
+                 Data is filtered to those classes and relabelled 0, 1, ... in the given order.
+                 When None the full multi-class dataset is prepared.
+        """
         print("Initializing memory-safe data loading...")
 
         parquet_file = pq.ParquetFile(self.config.parquet_path)
@@ -135,29 +122,21 @@ class SDSSDataModule:
         first_row = pl.read_parquet(self.config.parquet_path, n_rows=1)
         seq_length = len(first_row['FLUX'][0])
 
-        print(f"Pre-allocating {num_samples} samples x {seq_length} length (~10.5GB)...")
+        print(f"Pre-allocating {num_samples} samples x {seq_length} length...")
         flux_data = np.empty((num_samples, seq_length), dtype=np.float32)
 
         print("Streaming batches into NumPy (avoids RAM spike)...")
         current_idx = 0
-        # process in chunks of 50,000 rows to keep RAM usage low
         for batch in parquet_file.iter_batches(batch_size=50000, columns=['FLUX']):
-            # convert batch to Polars for easy extraction of the list column
             temp_df = pl.from_arrow(batch)
-
             flux_slice = np.vstack(temp_df['FLUX'].to_numpy())
             batch_len = len(flux_slice)
             flux_data[current_idx: current_idx + batch_len] = flux_slice
-
             current_idx += batch_len
             print(f" Loaded {current_idx}/{num_samples} samples...")
-
-            # cleanup RAM
-            del temp_df
-            del flux_slice
+            del temp_df, flux_slice
             gc.collect()
 
-        # load labels and scalars separately (minimal RAM usage)
         print("Loading labels and scalars...")
         full_df = pl.read_parquet(self.config.parquet_path, columns=[self.config.target_col] + self.config.scalar_cols)
 
@@ -166,11 +145,24 @@ class SDSSDataModule:
         self.num_classes = len(self.classes)
         scalar_data = full_df.select(self.config.scalar_cols).to_numpy().astype(np.float32)
 
-        # cleanup RAM
         del full_df
         gc.collect()
-        print("Splitting datasets...")
 
+        if classes is not None:
+            for c in classes:
+                if c not in self.classes:
+                    raise ValueError(f"Class '{c}' not in dataset. Available: {list(self.classes)}")
+            keep_encoded = np.array([np.where(self.classes == c)[0][0] for c in classes])
+            mask = np.isin(labels, keep_encoded)
+            flux_data = flux_data[mask]
+            scalar_data = scalar_data[mask]
+            label_remap = {int(old): new for new, old in enumerate(keep_encoded)}
+            labels = np.vectorize(label_remap.get)(labels[mask]).astype(np.int64)
+            self.classes = np.array(classes)
+            self.num_classes = len(classes)
+            print(f"Filtered to {len(labels)} samples across {self.num_classes} classes: {classes}")
+
+        print("Splitting datasets...")
         indices = np.arange(len(labels))
         train_val_idx, test_idx = train_test_split(indices, test_size=self.config.test_size, stratify=labels,
                                                    random_state=self.config.random_state)
@@ -181,8 +173,8 @@ class SDSSDataModule:
 
         print("Initializing Zero-Copy Datasets...")
         self.train_ds = SDSSDataset(flux_data, scalar_data, labels, train_idx, self.classes, self.config, is_train=True)
-        self.val_ds = SDSSDataset(flux_data, scalar_data, labels, val_idx, self.classes, self.config, is_train=False)
-        self.test_ds = SDSSDataset(flux_data, scalar_data, labels, test_idx, self.classes, self.config, is_train=False)
+        self.val_ds   = SDSSDataset(flux_data, scalar_data, labels, val_idx,   self.classes, self.config, is_train=False)
+        self.test_ds  = SDSSDataset(flux_data, scalar_data, labels, test_idx,  self.classes, self.config, is_train=False)
 
         print(f"Data prepared: {len(self.train_ds)} train, {len(self.val_ds)} val, {len(self.test_ds)} test samples.")
 

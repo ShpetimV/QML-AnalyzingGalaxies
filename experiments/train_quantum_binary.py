@@ -1,16 +1,13 @@
 import sys, os
-from xmlrpc.client import DateTime
-
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 import glob
 import torch
 import numpy as np
-from torch.utils.data import DataLoader, WeightedRandomSampler
 from sklearn.metrics import classification_report
 
 from src.param_config import SDSSDataConfig, TrainingConfig
-from src.sdss_dataloader import SDSSDataModule, BinarySubset
+from src.sdss_dataloader import SDSSDataModule
 from src.training.trainer import SDSSPerformanceTrainer
 from src.training.metrics import SDSSMetricTracker
 from src.models.quantum_model import AngleEncodingClassifier
@@ -34,44 +31,23 @@ def main():
     # 1. Setup Configuration & Data
     data_config = SDSSDataConfig(num_workers=0)  # 0 workers safer for quantum
     training_config = TrainingConfig()
-    # Make Directory with todays date for results to avoid overwriting previous runs
     results_dir = f"results_quantum_binary_{CLASS_A}_vs_{CLASS_B}"
     os.makedirs(results_dir, exist_ok=True)
 
     data_module = SDSSDataModule(data_config)
-    data_module.prepare_data()
+    data_module.prepare_data(classes=[CLASS_A, CLASS_B])
 
-    # 2. Filter to binary classes
-    all_classes = list(data_module.classes)
-    idx_a = all_classes.index(CLASS_A)
-    idx_b = all_classes.index(CLASS_B)
-    binary_classes = [CLASS_A, CLASS_B]
-
+    binary_classes = list(data_module.classes)
     print(f"Binary task: {CLASS_A} (0) vs {CLASS_B} (1)")
+    for name, ds in [("Train", data_module.train_ds), ("Val", data_module.val_ds), ("Test", data_module.test_ds)]:
+        labels = ds.labels
+        print(f"  {name}: {CLASS_A}={(labels==0).sum().item()}  {CLASS_B}={(labels==1).sum().item()}")
 
-    train_ds = BinarySubset(data_module.train_ds, idx_a, idx_b)
-    val_ds   = BinarySubset(data_module.val_ds,   idx_a, idx_b)
-    test_ds  = BinarySubset(data_module.test_ds,  idx_a, idx_b)
+    train_loader = data_module.get_loader(data_module.train_ds, use_sampler=True)
+    val_loader   = data_module.get_loader(data_module.val_ds)
+    test_loader  = data_module.get_loader(data_module.test_ds)
 
-    for name, ds in [("Train", train_ds), ("Val", val_ds), ("Test", test_ds)]:
-        n0 = (ds.labels == 0).sum().item()
-        n1 = (ds.labels == 1).sum().item()
-        print(f"  {name}: {CLASS_A}={n0}  {CLASS_B}={n1}")
-
-    # Balanced sampler for training
-    train_labels = train_ds.labels.numpy()
-    class_counts = np.bincount(train_labels, minlength=2)
-    sample_weights = 1.0 / class_counts[train_labels]
-    sampler = WeightedRandomSampler(sample_weights, len(sample_weights))
-
-    train_loader = DataLoader(train_ds, batch_size=data_config.batch_size,
-                              sampler=sampler, num_workers=0, pin_memory=False)
-    val_loader   = DataLoader(val_ds, batch_size=data_config.batch_size,
-                              shuffle=False, num_workers=0, pin_memory=False)
-    test_loader  = DataLoader(test_ds, batch_size=data_config.batch_size,
-                              shuffle=False, num_workers=0, pin_memory=False)
-
-    # 3. Initialize Quantum Model
+    # 2. Initialize Quantum Model
     model = AngleEncodingClassifier(
         num_classes=2,
         n_qubits=N_QUBITS,
@@ -83,11 +59,11 @@ def main():
     print(f"\nQuantum model: {N_QUBITS} qubits, {N_LAYERS} layers")
     print(f"  Total params: {total_params:,}  (quantum: {model.q_weights.numel()}, classical: {total_params - model.q_weights.numel()})")
 
-    # 4. Initialize Trainer & Metrics
+    # 3. Initialize Trainer & Metrics
     trainer = SDSSPerformanceTrainer(model, training_config, run_name="QuantumBinary")
     tracker = SDSSMetricTracker(results_dir=results_dir)
 
-    # 5. Run Training
+    # 4. Run Training
     if DO_TRAINING:
         print("\n--- Starting Training ---")
         trainer.train(
@@ -100,7 +76,7 @@ def main():
     else:
         print("\n--- Skipping Training (Evaluation Only Mode) ---")
 
-    # 6. Load best checkpoint
+    # 5. Load best checkpoint
     print("\n--- Evaluating on Test Set ---")
 
     list_of_runs = glob.glob("runs/QuantumBinary_*")
@@ -130,7 +106,7 @@ def main():
             all_labels.extend(labels.cpu().numpy())
             all_probs.extend(probs[:, 1].cpu().numpy())
 
-    # 7. Generate Metrics & Plots
+    # 6. Generate Metrics & Plots
     y_true  = np.array(all_labels)
     y_pred  = np.array(all_preds)
     y_probs = np.array(all_probs)
