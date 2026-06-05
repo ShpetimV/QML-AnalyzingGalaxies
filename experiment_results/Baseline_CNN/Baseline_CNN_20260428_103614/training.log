@@ -1,0 +1,345 @@
+2026-04-28 10:36:14 | INFO | Initialized Baseline_CNN on cuda
+2026-04-28 10:36:14 | INFO | Calculated and applied inverse class weights to FocalLoss.
+2026-04-28 10:36:17 | INFO | Starting training for 300 epochs...
+2026-04-28 10:40:14 | INFO | Epoch 01/300 | Tr Loss: 0.4949 | Tr Acc: 0.1595 | Val Loss: 0.3111 | Val Acc: 0.3735
+2026-04-28 10:40:14 | INFO |  -> New Best Model Saved (Acc: 0.3735)
+2026-04-28 10:44:11 | INFO | Epoch 02/300 | Tr Loss: 0.3087 | Tr Acc: 0.4208 | Val Loss: 0.1882 | Val Acc: 0.5199
+2026-04-28 10:44:11 | INFO |  -> New Best Model Saved (Acc: 0.5199)
+2026-04-28 10:48:10 | INFO | Epoch 03/300 | Tr Loss: 0.2372 | Tr Acc: 0.5230 | Val Loss: 0.1540 | Val Acc: 0.5877
+2026-04-28 10:48:10 | INFO |  -> New Best Model Saved (Acc: 0.5877)
+2026-04-28 10:52:08 | INFO | Epoch 04/300 | Tr Loss: 0.2093 | Tr Acc: 0.5644 | Val Loss: 0.1343 | Val Acc: 0.6084
+2026-04-28 10:52:08 | INFO |  -> New Best Model Saved (Acc: 0.6084)
+2026-04-28 10:56:05 | INFO | Epoch 05/300 | Tr Loss: 0.1923 | Tr Acc: 0.5919 | Val Loss: 0.1284 | Val Acc: 0.5927
+2026-04-28 11:00:06 | INFO | Epoch 06/300 | Tr Loss: 0.1812 | Tr Acc: 0.6131 | Val Loss: 0.1170 | Val Acc: 0.6422
+2026-04-28 11:00:06 | INFO |  -> New Best Model Saved (Acc: 0.6422)
+2026-04-28 11:04:04 | INFO | Epoch 07/300 | Tr Loss: 0.1731 | Tr Acc: 0.6284 | Val Loss: 0.1131 | Val Acc: 0.6415
+2026-04-28 11:08:04 | INFO | Epoch 08/300 | Tr Loss: 0.1633 | Tr Acc: 0.6403 | Val Loss: 0.1028 | Val Acc: 0.6771
+2026-04-28 11:08:04 | INFO |  -> New Best Model Saved (Acc: 0.6771)
+2026-04-28 11:12:01 | INFO | Epoch 09/300 | Tr Loss: 0.1543 | Tr Acc: 0.6506 | Val Loss: 0.1034 | Val Acc: 0.6657
+2026-04-28 11:15:59 | INFO | Epoch 10/300 | Tr Loss: 0.1518 | Tr Acc: 0.6585 | Val Loss: 0.0969 | Val Acc: 0.7011
+2026-04-28 11:15:59 | INFO |  -> New Best Model Saved (Acc: 0.7011)
+2026-04-28 11:19:57 | INFO | Epoch 11/300 | Tr Loss: 0.1460 | Tr Acc: 0.6639 | Val Loss: 0.1069 | Val Acc: 0.6767
+2026-04-28 11:23:55 | INFO | Epoch 12/300 | Tr Loss: 0.1486 | Tr Acc: 0.6679 | Val Loss: 0.1014 | Val Acc: 0.6526
+2026-04-28 11:27:55 | INFO | Epoch 13/300 | Tr Loss: 0.1426 | Tr Acc: 0.6739 | Val Loss: 0.0938 | Val Acc: 0.6963
+2026-04-28 11:31:55 | INFO | Epoch 14/300 | Tr Loss: 0.1418 | Tr Acc: 0.6776 | Val Loss: 0.0985 | Val Acc: 0.6712
+2026-04-28 11:35:53 | INFO | Epoch 15/300 | Tr Loss: 0.1388 | Tr Acc: 0.6785 | Val Loss: 0.0910 | Val Acc: 0.7033
+2026-04-28 11:35:54 | INFO |  -> New Best Model Saved (Acc: 0.7033)
+2026-04-28 11:39:52 | INFO | Epoch 16/300 | Tr Loss: 0.1374 | Tr Acc: 0.6806 | Val Loss: 0.0916 | Val Acc: 0.7142
+2026-04-28 11:39:53 | INFO |  -> New Best Model Saved (Acc: 0.7142)
+2026-04-28 11:43:51 | INFO | Epoch 17/300 | Tr Loss: 0.1363 | Tr Acc: 0.6830 | Val Loss: 0.0914 | Val Acc: 0.7187
+2026-04-28 11:43:51 | INFO |  -> New Best Model Saved (Acc: 0.7187)
+2026-04-28 11:47:52 | INFO | Epoch 18/300 | Tr Loss: 0.1307 | Tr Acc: 0.6867 | Val Loss: 0.0919 | Val Acc: 0.6769
+2026-04-28 11:51:49 | INFO | Epoch 19/300 | Tr Loss: 0.1314 | Tr Acc: 0.6886 | Val Loss: 0.0946 | Val Acc: 0.6870
+2026-04-28 11:55:49 | INFO | Epoch 20/300 | Tr Loss: 0.1321 | Tr Acc: 0.6896 | Val Loss: 0.0891 | Val Acc: 0.7004
+2026-04-28 11:59:47 | INFO | Epoch 21/300 | Tr Loss: 0.1317 | Tr Acc: 0.6894 | Val Loss: 0.0906 | Val Acc: 0.7060
+2026-04-28 12:03:44 | INFO | Epoch 22/300 | Tr Loss: 0.1261 | Tr Acc: 0.6913 | Val Loss: 0.0950 | Val Acc: 0.6812
+2026-04-28 12:07:39 | INFO | Epoch 23/300 | Tr Loss: 0.1316 | Tr Acc: 0.6908 | Val Loss: 0.0961 | Val Acc: 0.6813
+2026-04-28 12:11:39 | INFO | Epoch 24/300 | Tr Loss: 0.1337 | Tr Acc: 0.6910 | Val Loss: 0.0954 | Val Acc: 0.6947
+2026-04-28 12:15:36 | INFO | Epoch 25/300 | Tr Loss: 0.1286 | Tr Acc: 0.6890 | Val Loss: 0.1014 | Val Acc: 0.6659
+2026-04-28 12:19:36 | INFO | Epoch 26/300 | Tr Loss: 0.1351 | Tr Acc: 0.6880 | Val Loss: 0.0870 | Val Acc: 0.7003
+2026-04-28 12:23:37 | INFO | Epoch 27/300 | Tr Loss: 0.1346 | Tr Acc: 0.6892 | Val Loss: 0.0953 | Val Acc: 0.6950
+2026-04-28 12:27:39 | INFO | Epoch 28/300 | Tr Loss: 0.1332 | Tr Acc: 0.6887 | Val Loss: 0.1012 | Val Acc: 0.6809
+2026-04-28 12:31:39 | INFO | Epoch 29/300 | Tr Loss: 0.1343 | Tr Acc: 0.6816 | Val Loss: 0.0984 | Val Acc: 0.6658
+2026-04-28 12:35:41 | INFO | Epoch 30/300 | Tr Loss: 0.1370 | Tr Acc: 0.6764 | Val Loss: 0.0988 | Val Acc: 0.6674
+2026-04-28 12:39:43 | INFO | Epoch 31/300 | Tr Loss: 0.1431 | Tr Acc: 0.6674 | Val Loss: 0.1034 | Val Acc: 0.6461
+2026-04-28 12:43:44 | INFO | Epoch 32/300 | Tr Loss: 0.1538 | Tr Acc: 0.6480 | Val Loss: 0.1069 | Val Acc: 0.6362
+2026-04-28 12:47:42 | INFO | Epoch 33/300 | Tr Loss: 0.1501 | Tr Acc: 0.6437 | Val Loss: 0.1141 | Val Acc: 0.6366
+2026-04-28 12:51:42 | INFO | Epoch 34/300 | Tr Loss: 0.1459 | Tr Acc: 0.6513 | Val Loss: 0.1094 | Val Acc: 0.6588
+2026-04-28 12:55:43 | INFO | Epoch 35/300 | Tr Loss: 0.1694 | Tr Acc: 0.6098 | Val Loss: 0.1288 | Val Acc: 0.6076
+2026-04-28 12:59:46 | INFO | Epoch 36/300 | Tr Loss: 0.1796 | Tr Acc: 0.5990 | Val Loss: 0.1445 | Val Acc: 0.5631
+2026-04-28 13:03:49 | INFO | Epoch 37/300 | Tr Loss: 0.1762 | Tr Acc: 0.6029 | Val Loss: 0.1228 | Val Acc: 0.6188
+2026-04-28 13:07:51 | INFO | Epoch 38/300 | Tr Loss: 0.1685 | Tr Acc: 0.6151 | Val Loss: 0.1232 | Val Acc: 0.6145
+2026-04-28 13:11:52 | INFO | Epoch 39/300 | Tr Loss: 0.1640 | Tr Acc: 0.6202 | Val Loss: 0.1198 | Val Acc: 0.6228
+2026-04-28 13:15:54 | INFO | Epoch 40/300 | Tr Loss: 0.1599 | Tr Acc: 0.6275 | Val Loss: 0.1035 | Val Acc: 0.6619
+2026-04-28 13:19:55 | INFO | Epoch 41/300 | Tr Loss: 0.1604 | Tr Acc: 0.6335 | Val Loss: 0.1146 | Val Acc: 0.6421
+2026-04-28 13:23:55 | INFO | Epoch 42/300 | Tr Loss: 0.1592 | Tr Acc: 0.6361 | Val Loss: 0.1106 | Val Acc: 0.6269
+2026-04-28 13:27:55 | INFO | Epoch 43/300 | Tr Loss: 0.1525 | Tr Acc: 0.6406 | Val Loss: 0.1083 | Val Acc: 0.6381
+2026-04-28 13:31:57 | INFO | Epoch 44/300 | Tr Loss: 0.1545 | Tr Acc: 0.6440 | Val Loss: 0.1224 | Val Acc: 0.6047
+2026-04-28 13:35:58 | INFO | Epoch 45/300 | Tr Loss: 0.1549 | Tr Acc: 0.6405 | Val Loss: 0.1195 | Val Acc: 0.6225
+2026-04-28 13:40:00 | INFO | Epoch 46/300 | Tr Loss: 0.1526 | Tr Acc: 0.6420 | Val Loss: 0.1095 | Val Acc: 0.6334
+2026-04-28 13:44:03 | INFO | Epoch 47/300 | Tr Loss: 0.1470 | Tr Acc: 0.6511 | Val Loss: 0.1007 | Val Acc: 0.6517
+2026-04-28 13:48:07 | INFO | Epoch 48/300 | Tr Loss: 0.1495 | Tr Acc: 0.6473 | Val Loss: 0.1008 | Val Acc: 0.6880
+2026-04-28 13:52:10 | INFO | Epoch 49/300 | Tr Loss: 0.1387 | Tr Acc: 0.6674 | Val Loss: 0.1018 | Val Acc: 0.6750
+2026-04-28 13:56:11 | INFO | Epoch 50/300 | Tr Loss: 0.1378 | Tr Acc: 0.6737 | Val Loss: 0.1051 | Val Acc: 0.6357
+2026-04-28 14:00:15 | INFO | Epoch 51/300 | Tr Loss: 0.1393 | Tr Acc: 0.6744 | Val Loss: 0.0848 | Val Acc: 0.7132
+2026-04-28 14:04:16 | INFO | Epoch 52/300 | Tr Loss: 0.1314 | Tr Acc: 0.6870 | Val Loss: 0.0971 | Val Acc: 0.6478
+2026-04-28 14:08:19 | INFO | Epoch 53/300 | Tr Loss: 0.1329 | Tr Acc: 0.6892 | Val Loss: 0.0842 | Val Acc: 0.7126
+2026-04-28 14:12:20 | INFO | Epoch 54/300 | Tr Loss: 0.1282 | Tr Acc: 0.6911 | Val Loss: 0.0836 | Val Acc: 0.7114
+2026-04-28 14:16:20 | INFO | Epoch 55/300 | Tr Loss: 0.1247 | Tr Acc: 0.6991 | Val Loss: 0.0977 | Val Acc: 0.6506
+2026-04-28 14:20:23 | INFO | Epoch 56/300 | Tr Loss: 0.1235 | Tr Acc: 0.7026 | Val Loss: 0.0835 | Val Acc: 0.7115
+2026-04-28 14:24:24 | INFO | Epoch 57/300 | Tr Loss: 0.1209 | Tr Acc: 0.7021 | Val Loss: 0.0784 | Val Acc: 0.7160
+2026-04-28 14:28:27 | INFO | Epoch 58/300 | Tr Loss: 0.1195 | Tr Acc: 0.7068 | Val Loss: 0.0779 | Val Acc: 0.7201
+2026-04-28 14:28:27 | INFO |  -> New Best Model Saved (Acc: 0.7201)
+2026-04-28 14:32:28 | INFO | Epoch 59/300 | Tr Loss: 0.1181 | Tr Acc: 0.7121 | Val Loss: 0.0775 | Val Acc: 0.7273
+2026-04-28 14:32:28 | INFO |  -> New Best Model Saved (Acc: 0.7273)
+2026-04-28 14:36:30 | INFO | Epoch 60/300 | Tr Loss: 0.1199 | Tr Acc: 0.7140 | Val Loss: 0.0781 | Val Acc: 0.7174
+2026-04-28 14:40:30 | INFO | Epoch 61/300 | Tr Loss: 0.1113 | Tr Acc: 0.7207 | Val Loss: 0.0782 | Val Acc: 0.7130
+2026-04-28 14:44:31 | INFO | Epoch 62/300 | Tr Loss: 0.1131 | Tr Acc: 0.7204 | Val Loss: 0.0789 | Val Acc: 0.7282
+2026-04-28 14:44:31 | INFO |  -> New Best Model Saved (Acc: 0.7282)
+2026-04-28 14:48:34 | INFO | Epoch 63/300 | Tr Loss: 0.1155 | Tr Acc: 0.7123 | Val Loss: 0.0935 | Val Acc: 0.6731
+2026-04-28 14:52:36 | INFO | Epoch 64/300 | Tr Loss: 0.1095 | Tr Acc: 0.7143 | Val Loss: 0.0729 | Val Acc: 0.7337
+2026-04-28 14:52:36 | INFO |  -> New Best Model Saved (Acc: 0.7337)
+2026-04-28 14:56:38 | INFO | Epoch 65/300 | Tr Loss: 0.1118 | Tr Acc: 0.7201 | Val Loss: 0.0765 | Val Acc: 0.7277
+2026-04-28 15:00:38 | INFO | Epoch 66/300 | Tr Loss: 0.1061 | Tr Acc: 0.7253 | Val Loss: 0.0753 | Val Acc: 0.7351
+2026-04-28 15:00:38 | INFO |  -> New Best Model Saved (Acc: 0.7351)
+2026-04-28 15:04:41 | INFO | Epoch 67/300 | Tr Loss: 0.1092 | Tr Acc: 0.7244 | Val Loss: 0.0828 | Val Acc: 0.7208
+2026-04-28 15:08:43 | INFO | Epoch 68/300 | Tr Loss: 0.1046 | Tr Acc: 0.7332 | Val Loss: 0.0770 | Val Acc: 0.7268
+2026-04-28 15:12:44 | INFO | Epoch 69/300 | Tr Loss: 0.1087 | Tr Acc: 0.7312 | Val Loss: 0.0731 | Val Acc: 0.7254
+2026-04-28 15:16:45 | INFO | Epoch 70/300 | Tr Loss: 0.1042 | Tr Acc: 0.7369 | Val Loss: 0.0770 | Val Acc: 0.7271
+2026-04-28 15:20:47 | INFO | Epoch 71/300 | Tr Loss: 0.1046 | Tr Acc: 0.7302 | Val Loss: 0.0792 | Val Acc: 0.7254
+2026-04-28 15:24:48 | INFO | Epoch 72/300 | Tr Loss: 0.1033 | Tr Acc: 0.7380 | Val Loss: 0.0776 | Val Acc: 0.7278
+2026-04-28 15:28:47 | INFO | Epoch 73/300 | Tr Loss: 0.0997 | Tr Acc: 0.7421 | Val Loss: 0.0814 | Val Acc: 0.7095
+2026-04-28 15:32:49 | INFO | Epoch 74/300 | Tr Loss: 0.1019 | Tr Acc: 0.7434 | Val Loss: 0.0742 | Val Acc: 0.7415
+2026-04-28 15:32:49 | INFO |  -> New Best Model Saved (Acc: 0.7415)
+2026-04-28 15:36:49 | INFO | Epoch 75/300 | Tr Loss: 0.1022 | Tr Acc: 0.7438 | Val Loss: 0.1000 | Val Acc: 0.7081
+2026-04-28 15:40:50 | INFO | Epoch 76/300 | Tr Loss: 0.1005 | Tr Acc: 0.7432 | Val Loss: 0.0753 | Val Acc: 0.7280
+2026-04-28 15:44:49 | INFO | Epoch 77/300 | Tr Loss: 0.0990 | Tr Acc: 0.7454 | Val Loss: 0.0699 | Val Acc: 0.7454
+2026-04-28 15:44:49 | INFO |  -> New Best Model Saved (Acc: 0.7454)
+2026-04-28 15:48:50 | INFO | Epoch 78/300 | Tr Loss: 0.0982 | Tr Acc: 0.7518 | Val Loss: 0.0741 | Val Acc: 0.7566
+2026-04-28 15:48:50 | INFO |  -> New Best Model Saved (Acc: 0.7566)
+2026-04-28 15:52:49 | INFO | Epoch 79/300 | Tr Loss: 0.0966 | Tr Acc: 0.7502 | Val Loss: 0.0720 | Val Acc: 0.7544
+2026-04-28 15:56:47 | INFO | Epoch 80/300 | Tr Loss: 0.0926 | Tr Acc: 0.7530 | Val Loss: 0.0703 | Val Acc: 0.7535
+2026-04-28 16:00:47 | INFO | Epoch 81/300 | Tr Loss: 0.0996 | Tr Acc: 0.7543 | Val Loss: 0.0816 | Val Acc: 0.7065
+2026-04-28 16:04:46 | INFO | Epoch 82/300 | Tr Loss: 0.0923 | Tr Acc: 0.7580 | Val Loss: 0.0809 | Val Acc: 0.7138
+2026-04-28 16:08:46 | INFO | Epoch 83/300 | Tr Loss: 0.0941 | Tr Acc: 0.7570 | Val Loss: 0.0772 | Val Acc: 0.7402
+2026-04-28 16:12:47 | INFO | Epoch 84/300 | Tr Loss: 0.0910 | Tr Acc: 0.7626 | Val Loss: 0.0702 | Val Acc: 0.7611
+2026-04-28 16:12:48 | INFO |  -> New Best Model Saved (Acc: 0.7611)
+2026-04-28 16:16:48 | INFO | Epoch 85/300 | Tr Loss: 0.0901 | Tr Acc: 0.7623 | Val Loss: 0.0846 | Val Acc: 0.6979
+2026-04-28 16:20:48 | INFO | Epoch 86/300 | Tr Loss: 0.0935 | Tr Acc: 0.7624 | Val Loss: 0.0707 | Val Acc: 0.7563
+2026-04-28 16:24:49 | INFO | Epoch 87/300 | Tr Loss: 0.0863 | Tr Acc: 0.7662 | Val Loss: 0.0761 | Val Acc: 0.7524
+2026-04-28 16:28:51 | INFO | Epoch 88/300 | Tr Loss: 0.0914 | Tr Acc: 0.7615 | Val Loss: 0.0798 | Val Acc: 0.7130
+2026-04-28 16:32:50 | INFO | Epoch 89/300 | Tr Loss: 0.0905 | Tr Acc: 0.7668 | Val Loss: 0.0727 | Val Acc: 0.7611
+2026-04-28 16:36:52 | INFO | Epoch 90/300 | Tr Loss: 0.0884 | Tr Acc: 0.7696 | Val Loss: 0.0740 | Val Acc: 0.7593
+2026-04-28 16:40:52 | INFO | Epoch 91/300 | Tr Loss: 0.0890 | Tr Acc: 0.7676 | Val Loss: 0.0764 | Val Acc: 0.7459
+2026-04-28 16:44:51 | INFO | Epoch 92/300 | Tr Loss: 0.0865 | Tr Acc: 0.7733 | Val Loss: 0.0736 | Val Acc: 0.7619
+2026-04-28 16:44:51 | INFO |  -> New Best Model Saved (Acc: 0.7619)
+2026-04-28 16:48:53 | INFO | Epoch 93/300 | Tr Loss: 0.0882 | Tr Acc: 0.7739 | Val Loss: 0.0737 | Val Acc: 0.7534
+2026-04-28 16:52:54 | INFO | Epoch 94/300 | Tr Loss: 0.0853 | Tr Acc: 0.7766 | Val Loss: 0.0794 | Val Acc: 0.7273
+2026-04-28 16:56:58 | INFO | Epoch 95/300 | Tr Loss: 0.0840 | Tr Acc: 0.7771 | Val Loss: 0.0726 | Val Acc: 0.7627
+2026-04-28 16:56:58 | INFO |  -> New Best Model Saved (Acc: 0.7627)
+2026-04-28 17:01:01 | INFO | Epoch 96/300 | Tr Loss: 0.0842 | Tr Acc: 0.7774 | Val Loss: 0.0737 | Val Acc: 0.7645
+2026-04-28 17:01:01 | INFO |  -> New Best Model Saved (Acc: 0.7645)
+2026-04-28 17:05:03 | INFO | Epoch 97/300 | Tr Loss: 0.0860 | Tr Acc: 0.7808 | Val Loss: 0.0809 | Val Acc: 0.7378
+2026-04-28 17:09:06 | INFO | Epoch 98/300 | Tr Loss: 0.0861 | Tr Acc: 0.7838 | Val Loss: 0.0767 | Val Acc: 0.7402
+2026-04-28 17:13:09 | INFO | Epoch 99/300 | Tr Loss: 0.0803 | Tr Acc: 0.7848 | Val Loss: 0.0764 | Val Acc: 0.7684
+2026-04-28 17:13:09 | INFO |  -> New Best Model Saved (Acc: 0.7684)
+2026-04-28 17:17:10 | INFO | Epoch 100/300 | Tr Loss: 0.0816 | Tr Acc: 0.7859 | Val Loss: 0.0746 | Val Acc: 0.7693
+2026-04-28 17:17:11 | INFO |  -> New Best Model Saved (Acc: 0.7693)
+2026-04-28 17:21:13 | INFO | Epoch 101/300 | Tr Loss: 0.0810 | Tr Acc: 0.7868 | Val Loss: 0.0797 | Val Acc: 0.7422
+2026-04-28 17:25:15 | INFO | Epoch 102/300 | Tr Loss: 0.0826 | Tr Acc: 0.7883 | Val Loss: 0.0716 | Val Acc: 0.7679
+2026-04-28 17:29:16 | INFO | Epoch 103/300 | Tr Loss: 0.0832 | Tr Acc: 0.7877 | Val Loss: 0.0726 | Val Acc: 0.7711
+2026-04-28 17:29:16 | INFO |  -> New Best Model Saved (Acc: 0.7711)
+2026-04-28 17:33:18 | INFO | Epoch 104/300 | Tr Loss: 0.0790 | Tr Acc: 0.7885 | Val Loss: 0.0729 | Val Acc: 0.7705
+2026-04-28 17:37:20 | INFO | Epoch 105/300 | Tr Loss: 0.0793 | Tr Acc: 0.7884 | Val Loss: 0.0770 | Val Acc: 0.7643
+2026-04-28 17:41:22 | INFO | Epoch 106/300 | Tr Loss: 0.0776 | Tr Acc: 0.7932 | Val Loss: 0.0778 | Val Acc: 0.7526
+2026-04-28 17:45:24 | INFO | Epoch 107/300 | Tr Loss: 0.0773 | Tr Acc: 0.7929 | Val Loss: 0.0776 | Val Acc: 0.7896
+2026-04-28 17:45:24 | INFO |  -> New Best Model Saved (Acc: 0.7896)
+2026-04-28 17:49:26 | INFO | Epoch 108/300 | Tr Loss: 0.0788 | Tr Acc: 0.7920 | Val Loss: 0.0772 | Val Acc: 0.7588
+2026-04-28 17:53:28 | INFO | Epoch 109/300 | Tr Loss: 0.0771 | Tr Acc: 0.7953 | Val Loss: 0.0789 | Val Acc: 0.7511
+2026-04-28 17:57:31 | INFO | Epoch 110/300 | Tr Loss: 0.0771 | Tr Acc: 0.7954 | Val Loss: 0.0770 | Val Acc: 0.7615
+2026-04-28 18:01:33 | INFO | Epoch 111/300 | Tr Loss: 0.0744 | Tr Acc: 0.7975 | Val Loss: 0.0748 | Val Acc: 0.7767
+2026-04-28 18:05:36 | INFO | Epoch 112/300 | Tr Loss: 0.0754 | Tr Acc: 0.7988 | Val Loss: 0.0788 | Val Acc: 0.7513
+2026-04-28 18:09:37 | INFO | Epoch 113/300 | Tr Loss: 0.0770 | Tr Acc: 0.7987 | Val Loss: 0.0744 | Val Acc: 0.7489
+2026-04-28 18:13:39 | INFO | Epoch 114/300 | Tr Loss: 0.0756 | Tr Acc: 0.8011 | Val Loss: 0.0734 | Val Acc: 0.7872
+2026-04-28 18:17:41 | INFO | Epoch 115/300 | Tr Loss: 0.0743 | Tr Acc: 0.8021 | Val Loss: 0.0769 | Val Acc: 0.7884
+2026-04-28 18:21:44 | INFO | Epoch 116/300 | Tr Loss: 0.0756 | Tr Acc: 0.8040 | Val Loss: 0.0741 | Val Acc: 0.7774
+2026-04-28 18:25:45 | INFO | Epoch 117/300 | Tr Loss: 0.0753 | Tr Acc: 0.8051 | Val Loss: 0.0766 | Val Acc: 0.7636
+2026-04-28 18:29:45 | INFO | Epoch 118/300 | Tr Loss: 0.0737 | Tr Acc: 0.8062 | Val Loss: 0.0808 | Val Acc: 0.7505
+2026-04-28 18:33:47 | INFO | Epoch 119/300 | Tr Loss: 0.0739 | Tr Acc: 0.8020 | Val Loss: 0.0779 | Val Acc: 0.7778
+2026-04-28 18:37:48 | INFO | Epoch 120/300 | Tr Loss: 0.0731 | Tr Acc: 0.8078 | Val Loss: 0.0766 | Val Acc: 0.7715
+2026-04-28 18:41:50 | INFO | Epoch 121/300 | Tr Loss: 0.0721 | Tr Acc: 0.8084 | Val Loss: 0.0746 | Val Acc: 0.7711
+2026-04-28 18:45:53 | INFO | Epoch 122/300 | Tr Loss: 0.0744 | Tr Acc: 0.8018 | Val Loss: 0.0770 | Val Acc: 0.7638
+2026-04-28 18:49:55 | INFO | Epoch 123/300 | Tr Loss: 0.0700 | Tr Acc: 0.8103 | Val Loss: 0.0733 | Val Acc: 0.7900
+2026-04-28 18:49:55 | INFO |  -> New Best Model Saved (Acc: 0.7900)
+2026-04-28 18:53:57 | INFO | Epoch 124/300 | Tr Loss: 0.0714 | Tr Acc: 0.8090 | Val Loss: 0.0797 | Val Acc: 0.7568
+2026-04-28 18:57:59 | INFO | Epoch 125/300 | Tr Loss: 0.0741 | Tr Acc: 0.8087 | Val Loss: 0.0781 | Val Acc: 0.7786
+2026-04-28 19:02:02 | INFO | Epoch 126/300 | Tr Loss: 0.0732 | Tr Acc: 0.8108 | Val Loss: 0.0761 | Val Acc: 0.7821
+2026-04-28 19:06:04 | INFO | Epoch 127/300 | Tr Loss: 0.0706 | Tr Acc: 0.8129 | Val Loss: 0.0753 | Val Acc: 0.7815
+2026-04-28 19:10:06 | INFO | Epoch 128/300 | Tr Loss: 0.0674 | Tr Acc: 0.8152 | Val Loss: 0.0784 | Val Acc: 0.7841
+2026-04-28 19:14:08 | INFO | Epoch 129/300 | Tr Loss: 0.0739 | Tr Acc: 0.8141 | Val Loss: 0.0779 | Val Acc: 0.7883
+2026-04-28 19:18:10 | INFO | Epoch 130/300 | Tr Loss: 0.0702 | Tr Acc: 0.8176 | Val Loss: 0.0774 | Val Acc: 0.7946
+2026-04-28 19:18:10 | INFO |  -> New Best Model Saved (Acc: 0.7946)
+2026-04-28 19:22:11 | INFO | Epoch 131/300 | Tr Loss: 0.0699 | Tr Acc: 0.8167 | Val Loss: 0.0774 | Val Acc: 0.7729
+2026-04-28 19:26:12 | INFO | Epoch 132/300 | Tr Loss: 0.0682 | Tr Acc: 0.8166 | Val Loss: 0.0802 | Val Acc: 0.7864
+2026-04-28 19:30:12 | INFO | Epoch 133/300 | Tr Loss: 0.0682 | Tr Acc: 0.8186 | Val Loss: 0.0754 | Val Acc: 0.7791
+2026-04-28 19:34:14 | INFO | Epoch 134/300 | Tr Loss: 0.0674 | Tr Acc: 0.8199 | Val Loss: 0.0794 | Val Acc: 0.7751
+2026-04-28 19:38:15 | INFO | Epoch 135/300 | Tr Loss: 0.0701 | Tr Acc: 0.8211 | Val Loss: 0.0765 | Val Acc: 0.7640
+2026-04-28 19:42:15 | INFO | Epoch 136/300 | Tr Loss: 0.0673 | Tr Acc: 0.8163 | Val Loss: 0.0762 | Val Acc: 0.7825
+2026-04-28 19:46:18 | INFO | Epoch 137/300 | Tr Loss: 0.0705 | Tr Acc: 0.8205 | Val Loss: 0.0756 | Val Acc: 0.7784
+2026-04-28 19:50:19 | INFO | Epoch 138/300 | Tr Loss: 0.0717 | Tr Acc: 0.8122 | Val Loss: 0.0739 | Val Acc: 0.7886
+2026-04-28 19:54:22 | INFO | Epoch 139/300 | Tr Loss: 0.0692 | Tr Acc: 0.8200 | Val Loss: 0.0814 | Val Acc: 0.7743
+2026-04-28 19:58:25 | INFO | Epoch 140/300 | Tr Loss: 0.0689 | Tr Acc: 0.8196 | Val Loss: 0.0761 | Val Acc: 0.8001
+2026-04-28 19:58:26 | INFO |  -> New Best Model Saved (Acc: 0.8001)
+2026-04-28 20:02:28 | INFO | Epoch 141/300 | Tr Loss: 0.0685 | Tr Acc: 0.8184 | Val Loss: 0.0764 | Val Acc: 0.8005
+2026-04-28 20:02:29 | INFO |  -> New Best Model Saved (Acc: 0.8005)
+2026-04-28 20:06:31 | INFO | Epoch 142/300 | Tr Loss: 0.0688 | Tr Acc: 0.8226 | Val Loss: 0.0802 | Val Acc: 0.7907
+2026-04-28 20:10:34 | INFO | Epoch 143/300 | Tr Loss: 0.0690 | Tr Acc: 0.8239 | Val Loss: 0.0763 | Val Acc: 0.7957
+2026-04-28 20:14:34 | INFO | Epoch 144/300 | Tr Loss: 0.0686 | Tr Acc: 0.8241 | Val Loss: 0.0790 | Val Acc: 0.7579
+2026-04-28 20:18:37 | INFO | Epoch 145/300 | Tr Loss: 0.0666 | Tr Acc: 0.8232 | Val Loss: 0.0732 | Val Acc: 0.8002
+2026-04-28 20:22:38 | INFO | Epoch 146/300 | Tr Loss: 0.0648 | Tr Acc: 0.8277 | Val Loss: 0.0764 | Val Acc: 0.7914
+2026-04-28 20:26:40 | INFO | Epoch 147/300 | Tr Loss: 0.0652 | Tr Acc: 0.8294 | Val Loss: 0.0756 | Val Acc: 0.7693
+2026-04-28 20:30:40 | INFO | Epoch 148/300 | Tr Loss: 0.0652 | Tr Acc: 0.8301 | Val Loss: 0.0778 | Val Acc: 0.7914
+2026-04-28 20:34:41 | INFO | Epoch 149/300 | Tr Loss: 0.0639 | Tr Acc: 0.8282 | Val Loss: 0.0733 | Val Acc: 0.7974
+2026-04-28 20:38:43 | INFO | Epoch 150/300 | Tr Loss: 0.0666 | Tr Acc: 0.8308 | Val Loss: 0.0755 | Val Acc: 0.7733
+2026-04-28 20:42:45 | INFO | Epoch 151/300 | Tr Loss: 0.0702 | Tr Acc: 0.8316 | Val Loss: 0.0774 | Val Acc: 0.7824
+2026-04-28 20:46:48 | INFO | Epoch 152/300 | Tr Loss: 0.0639 | Tr Acc: 0.8338 | Val Loss: 0.0786 | Val Acc: 0.7731
+2026-04-28 20:50:50 | INFO | Epoch 153/300 | Tr Loss: 0.0654 | Tr Acc: 0.8337 | Val Loss: 0.0734 | Val Acc: 0.8106
+2026-04-28 20:50:51 | INFO |  -> New Best Model Saved (Acc: 0.8106)
+2026-04-28 20:54:53 | INFO | Epoch 154/300 | Tr Loss: 0.0631 | Tr Acc: 0.8347 | Val Loss: 0.0745 | Val Acc: 0.8076
+2026-04-28 20:58:56 | INFO | Epoch 155/300 | Tr Loss: 0.0608 | Tr Acc: 0.8367 | Val Loss: 0.0785 | Val Acc: 0.7863
+2026-04-28 21:02:59 | INFO | Epoch 156/300 | Tr Loss: 0.0652 | Tr Acc: 0.8358 | Val Loss: 0.0764 | Val Acc: 0.7746
+2026-04-28 21:07:02 | INFO | Epoch 157/300 | Tr Loss: 0.0619 | Tr Acc: 0.8372 | Val Loss: 0.0827 | Val Acc: 0.8004
+2026-04-28 21:11:03 | INFO | Epoch 158/300 | Tr Loss: 0.0637 | Tr Acc: 0.8378 | Val Loss: 0.0758 | Val Acc: 0.7878
+2026-04-28 21:15:04 | INFO | Epoch 159/300 | Tr Loss: 0.0656 | Tr Acc: 0.8378 | Val Loss: 0.0735 | Val Acc: 0.7935
+2026-04-28 21:19:06 | INFO | Epoch 160/300 | Tr Loss: 0.0609 | Tr Acc: 0.8403 | Val Loss: 0.0754 | Val Acc: 0.7857
+2026-04-28 21:23:08 | INFO | Epoch 161/300 | Tr Loss: 0.0628 | Tr Acc: 0.8413 | Val Loss: 0.0846 | Val Acc: 0.8072
+2026-04-28 21:27:08 | INFO | Epoch 162/300 | Tr Loss: 0.0621 | Tr Acc: 0.8399 | Val Loss: 0.0806 | Val Acc: 0.8142
+2026-04-28 21:27:08 | INFO |  -> New Best Model Saved (Acc: 0.8142)
+2026-04-28 21:31:08 | INFO | Epoch 163/300 | Tr Loss: 0.0613 | Tr Acc: 0.8426 | Val Loss: 0.0763 | Val Acc: 0.8098
+2026-04-28 21:35:10 | INFO | Epoch 164/300 | Tr Loss: 0.0648 | Tr Acc: 0.8403 | Val Loss: 0.0778 | Val Acc: 0.7999
+2026-04-28 21:39:12 | INFO | Epoch 165/300 | Tr Loss: 0.0625 | Tr Acc: 0.8429 | Val Loss: 0.0741 | Val Acc: 0.7976
+2026-04-28 21:43:14 | INFO | Epoch 166/300 | Tr Loss: 0.0610 | Tr Acc: 0.8451 | Val Loss: 0.0753 | Val Acc: 0.8091
+2026-04-28 21:47:16 | INFO | Epoch 167/300 | Tr Loss: 0.0604 | Tr Acc: 0.8450 | Val Loss: 0.0815 | Val Acc: 0.8018
+2026-04-28 21:51:18 | INFO | Epoch 168/300 | Tr Loss: 0.0619 | Tr Acc: 0.8435 | Val Loss: 0.0788 | Val Acc: 0.8102
+2026-04-28 21:55:18 | INFO | Epoch 169/300 | Tr Loss: 0.0639 | Tr Acc: 0.8454 | Val Loss: 0.0749 | Val Acc: 0.7962
+2026-04-28 21:59:21 | INFO | Epoch 170/300 | Tr Loss: 0.0617 | Tr Acc: 0.8446 | Val Loss: 0.0790 | Val Acc: 0.7903
+2026-04-28 22:03:23 | INFO | Epoch 171/300 | Tr Loss: 0.0592 | Tr Acc: 0.8440 | Val Loss: 0.0824 | Val Acc: 0.8116
+2026-04-28 22:07:26 | INFO | Epoch 172/300 | Tr Loss: 0.0599 | Tr Acc: 0.8502 | Val Loss: 0.0765 | Val Acc: 0.8079
+2026-04-28 22:11:28 | INFO | Epoch 173/300 | Tr Loss: 0.0611 | Tr Acc: 0.8490 | Val Loss: 0.0775 | Val Acc: 0.8033
+2026-04-28 22:15:28 | INFO | Epoch 174/300 | Tr Loss: 0.0589 | Tr Acc: 0.8482 | Val Loss: 0.0800 | Val Acc: 0.8068
+2026-04-28 22:19:29 | INFO | Epoch 175/300 | Tr Loss: 0.0607 | Tr Acc: 0.8486 | Val Loss: 0.0801 | Val Acc: 0.8094
+2026-04-28 22:23:31 | INFO | Epoch 176/300 | Tr Loss: 0.0563 | Tr Acc: 0.8520 | Val Loss: 0.0811 | Val Acc: 0.8048
+2026-04-28 22:27:33 | INFO | Epoch 177/300 | Tr Loss: 0.0613 | Tr Acc: 0.8523 | Val Loss: 0.0788 | Val Acc: 0.7793
+2026-04-28 22:31:35 | INFO | Epoch 178/300 | Tr Loss: 0.0619 | Tr Acc: 0.8541 | Val Loss: 0.0754 | Val Acc: 0.7881
+2026-04-28 22:35:36 | INFO | Epoch 179/300 | Tr Loss: 0.0578 | Tr Acc: 0.8556 | Val Loss: 0.0758 | Val Acc: 0.8071
+2026-04-28 22:39:37 | INFO | Epoch 180/300 | Tr Loss: 0.0580 | Tr Acc: 0.8539 | Val Loss: 0.0787 | Val Acc: 0.7908
+2026-04-28 22:43:37 | INFO | Epoch 181/300 | Tr Loss: 0.0581 | Tr Acc: 0.8564 | Val Loss: 0.0791 | Val Acc: 0.7928
+2026-04-28 22:47:37 | INFO | Epoch 182/300 | Tr Loss: 0.0574 | Tr Acc: 0.8563 | Val Loss: 0.0795 | Val Acc: 0.8127
+2026-04-28 22:51:37 | INFO | Epoch 183/300 | Tr Loss: 0.0578 | Tr Acc: 0.8580 | Val Loss: 0.0743 | Val Acc: 0.7826
+2026-04-28 22:55:38 | INFO | Epoch 184/300 | Tr Loss: 0.0562 | Tr Acc: 0.8592 | Val Loss: 0.0796 | Val Acc: 0.7910
+2026-04-28 22:59:38 | INFO | Epoch 185/300 | Tr Loss: 0.0585 | Tr Acc: 0.8612 | Val Loss: 0.0776 | Val Acc: 0.8008
+2026-04-28 23:03:36 | INFO | Epoch 186/300 | Tr Loss: 0.0585 | Tr Acc: 0.8615 | Val Loss: 0.0864 | Val Acc: 0.8105
+2026-04-28 23:07:33 | INFO | Epoch 187/300 | Tr Loss: 0.0551 | Tr Acc: 0.8612 | Val Loss: 0.0807 | Val Acc: 0.8119
+2026-04-28 23:11:28 | INFO | Epoch 188/300 | Tr Loss: 0.0597 | Tr Acc: 0.8628 | Val Loss: 0.0796 | Val Acc: 0.8054
+2026-04-28 23:15:21 | INFO | Epoch 189/300 | Tr Loss: 0.0581 | Tr Acc: 0.8628 | Val Loss: 0.0754 | Val Acc: 0.8109
+2026-04-28 23:19:17 | INFO | Epoch 190/300 | Tr Loss: 0.0574 | Tr Acc: 0.8634 | Val Loss: 0.0879 | Val Acc: 0.8248
+2026-04-28 23:19:18 | INFO |  -> New Best Model Saved (Acc: 0.8248)
+2026-04-28 23:23:12 | INFO | Epoch 191/300 | Tr Loss: 0.0561 | Tr Acc: 0.8642 | Val Loss: 0.0761 | Val Acc: 0.7883
+2026-04-28 23:27:07 | INFO | Epoch 192/300 | Tr Loss: 0.0595 | Tr Acc: 0.8674 | Val Loss: 0.0797 | Val Acc: 0.8116
+2026-04-28 23:31:02 | INFO | Epoch 193/300 | Tr Loss: 0.0567 | Tr Acc: 0.8670 | Val Loss: 0.0787 | Val Acc: 0.8214
+2026-04-28 23:34:57 | INFO | Epoch 194/300 | Tr Loss: 0.0541 | Tr Acc: 0.8660 | Val Loss: 0.0817 | Val Acc: 0.8134
+2026-04-28 23:38:54 | INFO | Epoch 195/300 | Tr Loss: 0.0555 | Tr Acc: 0.8680 | Val Loss: 0.0776 | Val Acc: 0.8153
+2026-04-28 23:42:49 | INFO | Epoch 196/300 | Tr Loss: 0.0554 | Tr Acc: 0.8663 | Val Loss: 0.0786 | Val Acc: 0.7976
+2026-04-28 23:46:45 | INFO | Epoch 197/300 | Tr Loss: 0.0568 | Tr Acc: 0.8677 | Val Loss: 0.0790 | Val Acc: 0.8179
+2026-04-28 23:50:41 | INFO | Epoch 198/300 | Tr Loss: 0.0507 | Tr Acc: 0.8693 | Val Loss: 0.0808 | Val Acc: 0.8210
+2026-04-28 23:54:38 | INFO | Epoch 199/300 | Tr Loss: 0.0553 | Tr Acc: 0.8709 | Val Loss: 0.0879 | Val Acc: 0.8310
+2026-04-28 23:54:38 | INFO |  -> New Best Model Saved (Acc: 0.8310)
+2026-04-28 23:58:37 | INFO | Epoch 200/300 | Tr Loss: 0.0579 | Tr Acc: 0.8713 | Val Loss: 0.0772 | Val Acc: 0.8049
+2026-04-29 00:02:33 | INFO | Epoch 201/300 | Tr Loss: 0.0557 | Tr Acc: 0.8708 | Val Loss: 0.0835 | Val Acc: 0.8218
+2026-04-29 00:06:29 | INFO | Epoch 202/300 | Tr Loss: 0.0527 | Tr Acc: 0.8739 | Val Loss: 0.0794 | Val Acc: 0.8152
+2026-04-29 00:10:25 | INFO | Epoch 203/300 | Tr Loss: 0.0532 | Tr Acc: 0.8735 | Val Loss: 0.0791 | Val Acc: 0.8066
+2026-04-29 00:14:20 | INFO | Epoch 204/300 | Tr Loss: 0.0534 | Tr Acc: 0.8744 | Val Loss: 0.0783 | Val Acc: 0.8123
+2026-04-29 00:18:16 | INFO | Epoch 205/300 | Tr Loss: 0.0555 | Tr Acc: 0.8733 | Val Loss: 0.0789 | Val Acc: 0.7871
+2026-04-29 00:22:09 | INFO | Epoch 206/300 | Tr Loss: 0.0507 | Tr Acc: 0.8754 | Val Loss: 0.0776 | Val Acc: 0.8026
+2026-04-29 00:26:03 | INFO | Epoch 207/300 | Tr Loss: 0.0551 | Tr Acc: 0.8771 | Val Loss: 0.0801 | Val Acc: 0.8178
+2026-04-29 00:29:59 | INFO | Epoch 208/300 | Tr Loss: 0.0563 | Tr Acc: 0.8785 | Val Loss: 0.0828 | Val Acc: 0.7980
+2026-04-29 00:33:56 | INFO | Epoch 209/300 | Tr Loss: 0.0530 | Tr Acc: 0.8769 | Val Loss: 0.0799 | Val Acc: 0.8119
+2026-04-29 00:37:53 | INFO | Epoch 210/300 | Tr Loss: 0.0489 | Tr Acc: 0.8797 | Val Loss: 0.0878 | Val Acc: 0.8240
+2026-04-29 00:41:49 | INFO | Epoch 211/300 | Tr Loss: 0.0526 | Tr Acc: 0.8802 | Val Loss: 0.0809 | Val Acc: 0.8118
+2026-04-29 00:45:48 | INFO | Epoch 212/300 | Tr Loss: 0.0551 | Tr Acc: 0.8806 | Val Loss: 0.0789 | Val Acc: 0.8090
+2026-04-29 00:49:49 | INFO | Epoch 213/300 | Tr Loss: 0.0532 | Tr Acc: 0.8791 | Val Loss: 0.0791 | Val Acc: 0.8116
+2026-04-29 00:53:49 | INFO | Epoch 214/300 | Tr Loss: 0.0523 | Tr Acc: 0.8809 | Val Loss: 0.0834 | Val Acc: 0.8272
+2026-04-29 00:57:49 | INFO | Epoch 215/300 | Tr Loss: 0.0530 | Tr Acc: 0.8835 | Val Loss: 0.0811 | Val Acc: 0.8177
+2026-04-29 01:01:47 | INFO | Epoch 216/300 | Tr Loss: 0.0521 | Tr Acc: 0.8837 | Val Loss: 0.0872 | Val Acc: 0.8176
+2026-04-29 01:05:47 | INFO | Epoch 217/300 | Tr Loss: 0.0502 | Tr Acc: 0.8837 | Val Loss: 0.0854 | Val Acc: 0.8179
+2026-04-29 01:09:48 | INFO | Epoch 218/300 | Tr Loss: 0.0533 | Tr Acc: 0.8837 | Val Loss: 0.0833 | Val Acc: 0.8255
+2026-04-29 01:13:50 | INFO | Epoch 219/300 | Tr Loss: 0.0502 | Tr Acc: 0.8863 | Val Loss: 0.0819 | Val Acc: 0.8164
+2026-04-29 01:17:54 | INFO | Epoch 220/300 | Tr Loss: 0.0522 | Tr Acc: 0.8858 | Val Loss: 0.0769 | Val Acc: 0.8124
+2026-04-29 01:21:57 | INFO | Epoch 221/300 | Tr Loss: 0.0498 | Tr Acc: 0.8856 | Val Loss: 0.0829 | Val Acc: 0.8259
+2026-04-29 01:25:58 | INFO | Epoch 222/300 | Tr Loss: 0.0514 | Tr Acc: 0.8882 | Val Loss: 0.0819 | Val Acc: 0.8224
+2026-04-29 01:30:01 | INFO | Epoch 223/300 | Tr Loss: 0.0508 | Tr Acc: 0.8897 | Val Loss: 0.0885 | Val Acc: 0.8293
+2026-04-29 01:34:00 | INFO | Epoch 224/300 | Tr Loss: 0.0495 | Tr Acc: 0.8899 | Val Loss: 0.0785 | Val Acc: 0.8074
+2026-04-29 01:38:00 | INFO | Epoch 225/300 | Tr Loss: 0.0493 | Tr Acc: 0.8920 | Val Loss: 0.0809 | Val Acc: 0.8187
+2026-04-29 01:42:00 | INFO | Epoch 226/300 | Tr Loss: 0.0519 | Tr Acc: 0.8922 | Val Loss: 0.0867 | Val Acc: 0.8239
+2026-04-29 01:46:02 | INFO | Epoch 227/300 | Tr Loss: 0.0494 | Tr Acc: 0.8924 | Val Loss: 0.0769 | Val Acc: 0.8118
+2026-04-29 01:50:03 | INFO | Epoch 228/300 | Tr Loss: 0.0515 | Tr Acc: 0.8931 | Val Loss: 0.0877 | Val Acc: 0.8279
+2026-04-29 01:54:05 | INFO | Epoch 229/300 | Tr Loss: 0.0488 | Tr Acc: 0.8953 | Val Loss: 0.0937 | Val Acc: 0.8327
+2026-04-29 01:54:05 | INFO |  -> New Best Model Saved (Acc: 0.8327)
+2026-04-29 01:58:08 | INFO | Epoch 230/300 | Tr Loss: 0.0513 | Tr Acc: 0.8947 | Val Loss: 0.0876 | Val Acc: 0.8237
+2026-04-29 02:02:10 | INFO | Epoch 231/300 | Tr Loss: 0.0491 | Tr Acc: 0.8956 | Val Loss: 0.0878 | Val Acc: 0.8281
+2026-04-29 02:06:11 | INFO | Epoch 232/300 | Tr Loss: 0.0498 | Tr Acc: 0.8958 | Val Loss: 0.0810 | Val Acc: 0.8169
+2026-04-29 02:10:10 | INFO | Epoch 233/300 | Tr Loss: 0.0499 | Tr Acc: 0.8978 | Val Loss: 0.0822 | Val Acc: 0.8204
+2026-04-29 02:14:12 | INFO | Epoch 234/300 | Tr Loss: 0.0510 | Tr Acc: 0.8955 | Val Loss: 0.0940 | Val Acc: 0.8380
+2026-04-29 02:14:12 | INFO |  -> New Best Model Saved (Acc: 0.8380)
+2026-04-29 02:18:15 | INFO | Epoch 235/300 | Tr Loss: 0.0491 | Tr Acc: 0.8973 | Val Loss: 0.0887 | Val Acc: 0.8253
+2026-04-29 02:22:17 | INFO | Epoch 236/300 | Tr Loss: 0.0495 | Tr Acc: 0.8994 | Val Loss: 0.0826 | Val Acc: 0.8276
+2026-04-29 02:26:18 | INFO | Epoch 237/300 | Tr Loss: 0.0511 | Tr Acc: 0.8990 | Val Loss: 0.0928 | Val Acc: 0.8388
+2026-04-29 02:26:18 | INFO |  -> New Best Model Saved (Acc: 0.8388)
+2026-04-29 02:30:21 | INFO | Epoch 238/300 | Tr Loss: 0.0492 | Tr Acc: 0.8988 | Val Loss: 0.0806 | Val Acc: 0.8066
+2026-04-29 02:34:24 | INFO | Epoch 239/300 | Tr Loss: 0.0464 | Tr Acc: 0.8990 | Val Loss: 0.0937 | Val Acc: 0.8373
+2026-04-29 02:38:27 | INFO | Epoch 240/300 | Tr Loss: 0.0474 | Tr Acc: 0.9026 | Val Loss: 0.0859 | Val Acc: 0.8336
+2026-04-29 02:42:29 | INFO | Epoch 241/300 | Tr Loss: 0.0500 | Tr Acc: 0.9016 | Val Loss: 0.0840 | Val Acc: 0.8265
+2026-04-29 02:46:32 | INFO | Epoch 242/300 | Tr Loss: 0.0485 | Tr Acc: 0.9026 | Val Loss: 0.0809 | Val Acc: 0.8218
+2026-04-29 02:50:33 | INFO | Epoch 243/300 | Tr Loss: 0.0491 | Tr Acc: 0.9035 | Val Loss: 0.0805 | Val Acc: 0.8151
+2026-04-29 02:54:35 | INFO | Epoch 244/300 | Tr Loss: 0.0475 | Tr Acc: 0.9046 | Val Loss: 0.0834 | Val Acc: 0.8171
+2026-04-29 02:58:37 | INFO | Epoch 245/300 | Tr Loss: 0.0490 | Tr Acc: 0.9033 | Val Loss: 0.0866 | Val Acc: 0.8297
+2026-04-29 03:02:39 | INFO | Epoch 246/300 | Tr Loss: 0.0493 | Tr Acc: 0.9046 | Val Loss: 0.0846 | Val Acc: 0.8268
+2026-04-29 03:06:42 | INFO | Epoch 247/300 | Tr Loss: 0.0480 | Tr Acc: 0.9048 | Val Loss: 0.1027 | Val Acc: 0.8415
+2026-04-29 03:06:42 | INFO |  -> New Best Model Saved (Acc: 0.8415)
+2026-04-29 03:10:44 | INFO | Epoch 248/300 | Tr Loss: 0.0483 | Tr Acc: 0.9050 | Val Loss: 0.0840 | Val Acc: 0.8276
+2026-04-29 03:14:46 | INFO | Epoch 249/300 | Tr Loss: 0.0479 | Tr Acc: 0.9052 | Val Loss: 0.0866 | Val Acc: 0.8270
+2026-04-29 03:18:48 | INFO | Epoch 250/300 | Tr Loss: 0.0476 | Tr Acc: 0.9054 | Val Loss: 0.0841 | Val Acc: 0.8288
+2026-04-29 03:22:52 | INFO | Epoch 251/300 | Tr Loss: 0.0506 | Tr Acc: 0.9066 | Val Loss: 0.0889 | Val Acc: 0.8332
+2026-04-29 03:26:54 | INFO | Epoch 252/300 | Tr Loss: 0.0469 | Tr Acc: 0.9076 | Val Loss: 0.0844 | Val Acc: 0.8312
+2026-04-29 03:30:56 | INFO | Epoch 253/300 | Tr Loss: 0.0480 | Tr Acc: 0.9065 | Val Loss: 0.0838 | Val Acc: 0.8250
+2026-04-29 03:34:59 | INFO | Epoch 254/300 | Tr Loss: 0.0454 | Tr Acc: 0.9077 | Val Loss: 0.0789 | Val Acc: 0.8168
+2026-04-29 03:39:00 | INFO | Epoch 255/300 | Tr Loss: 0.0455 | Tr Acc: 0.9073 | Val Loss: 0.0792 | Val Acc: 0.8195
+2026-04-29 03:43:03 | INFO | Epoch 256/300 | Tr Loss: 0.0448 | Tr Acc: 0.9094 | Val Loss: 0.0859 | Val Acc: 0.8328
+2026-04-29 03:47:05 | INFO | Epoch 257/300 | Tr Loss: 0.0468 | Tr Acc: 0.9089 | Val Loss: 0.0769 | Val Acc: 0.8002
+2026-04-29 03:51:07 | INFO | Epoch 258/300 | Tr Loss: 0.0480 | Tr Acc: 0.9097 | Val Loss: 0.0904 | Val Acc: 0.8315
+2026-04-29 03:55:10 | INFO | Epoch 259/300 | Tr Loss: 0.0474 | Tr Acc: 0.9100 | Val Loss: 0.0785 | Val Acc: 0.8013
+2026-04-29 03:59:13 | INFO | Epoch 260/300 | Tr Loss: 0.0443 | Tr Acc: 0.9107 | Val Loss: 0.0882 | Val Acc: 0.8255
+2026-04-29 04:03:14 | INFO | Epoch 261/300 | Tr Loss: 0.0468 | Tr Acc: 0.9106 | Val Loss: 0.0861 | Val Acc: 0.8344
+2026-04-29 04:07:16 | INFO | Epoch 262/300 | Tr Loss: 0.0484 | Tr Acc: 0.9119 | Val Loss: 0.0850 | Val Acc: 0.8361
+2026-04-29 04:11:17 | INFO | Epoch 263/300 | Tr Loss: 0.0472 | Tr Acc: 0.9121 | Val Loss: 0.0836 | Val Acc: 0.8315
+2026-04-29 04:15:19 | INFO | Epoch 264/300 | Tr Loss: 0.0472 | Tr Acc: 0.9121 | Val Loss: 0.0845 | Val Acc: 0.8341
+2026-04-29 04:19:20 | INFO | Epoch 265/300 | Tr Loss: 0.0472 | Tr Acc: 0.9119 | Val Loss: 0.0853 | Val Acc: 0.8359
+2026-04-29 04:23:22 | INFO | Epoch 266/300 | Tr Loss: 0.0466 | Tr Acc: 0.9126 | Val Loss: 0.0828 | Val Acc: 0.8253
+2026-04-29 04:27:21 | INFO | Epoch 267/300 | Tr Loss: 0.0464 | Tr Acc: 0.9126 | Val Loss: 0.0914 | Val Acc: 0.8390
+2026-04-29 04:31:23 | INFO | Epoch 268/300 | Tr Loss: 0.0484 | Tr Acc: 0.9126 | Val Loss: 0.0831 | Val Acc: 0.8311
+2026-04-29 04:35:26 | INFO | Epoch 269/300 | Tr Loss: 0.0496 | Tr Acc: 0.9134 | Val Loss: 0.0819 | Val Acc: 0.8232
+2026-04-29 04:39:28 | INFO | Epoch 270/300 | Tr Loss: 0.0482 | Tr Acc: 0.9147 | Val Loss: 0.0846 | Val Acc: 0.8318
+2026-04-29 04:43:31 | INFO | Epoch 271/300 | Tr Loss: 0.0459 | Tr Acc: 0.9136 | Val Loss: 0.0804 | Val Acc: 0.8281
+2026-04-29 04:47:32 | INFO | Epoch 272/300 | Tr Loss: 0.0458 | Tr Acc: 0.9145 | Val Loss: 0.0883 | Val Acc: 0.8387
+2026-04-29 04:51:32 | INFO | Epoch 273/300 | Tr Loss: 0.0432 | Tr Acc: 0.9149 | Val Loss: 0.0865 | Val Acc: 0.8343
+2026-04-29 04:55:33 | INFO | Epoch 274/300 | Tr Loss: 0.0465 | Tr Acc: 0.9148 | Val Loss: 0.1056 | Val Acc: 0.8454
+2026-04-29 04:55:33 | INFO |  -> New Best Model Saved (Acc: 0.8454)
+2026-04-29 04:59:34 | INFO | Epoch 275/300 | Tr Loss: 0.0459 | Tr Acc: 0.9147 | Val Loss: 0.0843 | Val Acc: 0.8320
+2026-04-29 05:03:34 | INFO | Epoch 276/300 | Tr Loss: 0.0475 | Tr Acc: 0.9142 | Val Loss: 0.0824 | Val Acc: 0.8258
+2026-04-29 05:07:31 | INFO | Epoch 277/300 | Tr Loss: 0.0490 | Tr Acc: 0.9148 | Val Loss: 0.0824 | Val Acc: 0.8255
+2026-04-29 05:11:30 | INFO | Epoch 278/300 | Tr Loss: 0.0448 | Tr Acc: 0.9150 | Val Loss: 0.0880 | Val Acc: 0.8385
+2026-04-29 05:15:31 | INFO | Epoch 279/300 | Tr Loss: 0.0474 | Tr Acc: 0.9163 | Val Loss: 0.0951 | Val Acc: 0.8426
+2026-04-29 05:19:30 | INFO | Epoch 280/300 | Tr Loss: 0.0465 | Tr Acc: 0.9162 | Val Loss: 0.0903 | Val Acc: 0.8388
+2026-04-29 05:23:32 | INFO | Epoch 281/300 | Tr Loss: 0.0458 | Tr Acc: 0.9156 | Val Loss: 0.0818 | Val Acc: 0.8287
+2026-04-29 05:27:32 | INFO | Epoch 282/300 | Tr Loss: 0.0471 | Tr Acc: 0.9168 | Val Loss: 0.0866 | Val Acc: 0.8339
+2026-04-29 05:31:31 | INFO | Epoch 283/300 | Tr Loss: 0.0489 | Tr Acc: 0.9153 | Val Loss: 0.0802 | Val Acc: 0.8129
+2026-04-29 05:35:32 | INFO | Epoch 284/300 | Tr Loss: 0.0483 | Tr Acc: 0.9162 | Val Loss: 0.0803 | Val Acc: 0.8198
+2026-04-29 05:39:29 | INFO | Epoch 285/300 | Tr Loss: 0.0476 | Tr Acc: 0.9160 | Val Loss: 0.0908 | Val Acc: 0.8376
+2026-04-29 05:43:30 | INFO | Epoch 286/300 | Tr Loss: 0.0483 | Tr Acc: 0.9168 | Val Loss: 0.0843 | Val Acc: 0.8265
+2026-04-29 05:47:31 | INFO | Epoch 287/300 | Tr Loss: 0.0460 | Tr Acc: 0.9173 | Val Loss: 0.0890 | Val Acc: 0.8392
+2026-04-29 05:51:32 | INFO | Epoch 288/300 | Tr Loss: 0.0447 | Tr Acc: 0.9161 | Val Loss: 0.0849 | Val Acc: 0.8268
+2026-04-29 05:55:31 | INFO | Epoch 289/300 | Tr Loss: 0.0442 | Tr Acc: 0.9162 | Val Loss: 0.0792 | Val Acc: 0.8131
+2026-04-29 05:59:31 | INFO | Epoch 290/300 | Tr Loss: 0.0479 | Tr Acc: 0.9177 | Val Loss: 0.0916 | Val Acc: 0.8375
+2026-04-29 06:03:32 | INFO | Epoch 291/300 | Tr Loss: 0.0461 | Tr Acc: 0.9165 | Val Loss: 0.0832 | Val Acc: 0.8308
+2026-04-29 06:07:33 | INFO | Epoch 292/300 | Tr Loss: 0.0461 | Tr Acc: 0.9162 | Val Loss: 0.0875 | Val Acc: 0.8264
+2026-04-29 06:11:34 | INFO | Epoch 293/300 | Tr Loss: 0.0472 | Tr Acc: 0.9171 | Val Loss: 0.0816 | Val Acc: 0.8290
+2026-04-29 06:15:34 | INFO | Epoch 294/300 | Tr Loss: 0.0474 | Tr Acc: 0.9168 | Val Loss: 0.0801 | Val Acc: 0.8233
+2026-04-29 06:19:36 | INFO | Epoch 295/300 | Tr Loss: 0.0470 | Tr Acc: 0.9167 | Val Loss: 0.0881 | Val Acc: 0.8371
+2026-04-29 06:23:37 | INFO | Epoch 296/300 | Tr Loss: 0.0482 | Tr Acc: 0.9160 | Val Loss: 0.0810 | Val Acc: 0.8209
+2026-04-29 06:27:38 | INFO | Epoch 297/300 | Tr Loss: 0.0477 | Tr Acc: 0.9167 | Val Loss: 0.0892 | Val Acc: 0.8406
+2026-04-29 06:31:37 | INFO | Epoch 298/300 | Tr Loss: 0.0469 | Tr Acc: 0.9172 | Val Loss: 0.0815 | Val Acc: 0.8219
+2026-04-29 06:35:39 | INFO | Epoch 299/300 | Tr Loss: 0.0457 | Tr Acc: 0.9175 | Val Loss: 0.0818 | Val Acc: 0.8214
+2026-04-29 06:39:38 | INFO | Epoch 300/300 | Tr Loss: 0.0443 | Tr Acc: 0.9169 | Val Loss: 0.1004 | Val Acc: 0.8440
+2026-04-29 06:40:11 | INFO | ========== FINAL TEST RESULTS ==========
+2026-04-29 06:40:11 | INFO | Test Loss: 0.2479 | Test Acc: 0.8450 (84.50%)
+2026-04-29 06:40:11 | INFO | ========================================

@@ -1,0 +1,67 @@
+=== QML TARGET ANALYSIS REPORT (BASELINE_CNN SET) ===
+
+Total Classes: 62
+Total Samples: 96389
+
+--- 1. THE HARDEST CLASSES (LOWEST ACCURACY/RECALL) ---
+These are classes the model consistently fails to identify.
+ - STAR_A5             : 35.2% accuracy (54 samples)
+ - QSO_STARFORMING     : 38.8% accuracy (49 samples)
+ - QSO_STARBURST       : 40.8% accuracy (120 samples)
+ - STAR_SUBDWARF_F     : 45.7% accuracy (197 samples)
+ - STAR_B5             : 48.3% accuracy (174 samples)
+ - STAR_B0             : 50.0% accuracy (66 samples)
+ - STAR_F5             : 52.2% accuracy (69 samples)
+ - STAR_B2_B2_5        : 54.1% accuracy (133 samples)
+ - STAR_B3             : 54.3% accuracy (138 samples)
+ - GALAXY_BROADLINE    : 61.3% accuracy (271 samples)
+
+--- 2. THE MIRRORS (SYMMETRIC CONFUSION PAIRS) ---
+Prime QML Targets: The CNN sees these pairs as overlapping in feature space.
+ - STAR_A5 <---> STAR_F0 | (Total overlap: 33.7%)
+      STAR_A5 predicted as STAR_F0: 33.3%
+      STAR_F0 predicted as STAR_A5: 0.4%
+ - QSO_STARBURST <---> QSO_STARBURST_BROADLINE | (Total overlap: 28.7%)
+      QSO_STARBURST predicted as QSO_STARBURST_BROADLINE: 27.5%
+      QSO_STARBURST_BROADLINE predicted as QSO_STARBURST: 1.2%
+ - QSO_STARBURST_BROADLINE <---> QSO_STARFORMING | (Total overlap: 25.2%)
+      QSO_STARBURST_BROADLINE predicted as QSO_STARFORMING: 0.7%
+      QSO_STARFORMING predicted as QSO_STARBURST_BROADLINE: 24.5%
+ - STAR_B0 <---> STAR_O8 | (Total overlap: 23.6%)
+      STAR_B0 predicted as STAR_O8: 22.7%
+      STAR_O8 predicted as STAR_B0: 0.9%
+ - STAR_BROWN_DWARF_L <---> STAR_M8 | (Total overlap: 21.5%)
+      STAR_BROWN_DWARF_L predicted as STAR_M8: 15.4%
+      STAR_M8 predicted as STAR_BROWN_DWARF_L: 6.1%
+ - GALAXY_BROADLINE <---> GALAXY_NORMAL | (Total overlap: 20.7%)
+      GALAXY_BROADLINE predicted as GALAXY_NORMAL: 14.0%
+      GALAXY_NORMAL predicted as GALAXY_BROADLINE: 6.7%
+ - QSO_AGN_BROADLINE <---> QSO_STARBURST_BROADLINE | (Total overlap: 20.1%)
+      QSO_AGN_BROADLINE predicted as QSO_STARBURST_BROADLINE: 18.2%
+      QSO_STARBURST_BROADLINE predicted as QSO_AGN_BROADLINE: 1.9%
+ - GALAXY_STARBURST <---> GALAXY_STARFORMING | (Total overlap: 19.6%)
+      GALAXY_STARBURST predicted as GALAXY_STARFORMING: 11.7%
+      GALAXY_STARFORMING predicted as GALAXY_STARBURST: 8.0%
+ - GALAXY_NORMAL <---> GALAXY_STARFORMING | (Total overlap: 19.2%)
+      GALAXY_NORMAL predicted as GALAXY_STARFORMING: 5.7%
+      GALAXY_STARFORMING predicted as GALAXY_NORMAL: 13.4%
+ - GALAXY_STARFORMING <---> QSO_STARFORMING | (Total overlap: 18.8%)
+      GALAXY_STARFORMING predicted as QSO_STARFORMING: 0.4%
+      QSO_STARFORMING predicted as GALAXY_STARFORMING: 18.4%
+
+--- 3. THE BLACK HOLES (LOWEST PRECISION / HIGH FALSE POSITIVES) ---
+Classes the model guesses frequently, but is usually wrong when it does.
+ - GALAXY_BROADLINE    : 35.2% precision (306 false positives absorbed)
+ - STAR_A5             : 38.8% precision (30 false positives absorbed)
+ - QSO_STARBURST       : 41.2% precision (70 false positives absorbed)
+ - STAR_SUBDWARF_F     : 42.3% precision (123 false positives absorbed)
+ - QSO_STARFORMING     : 46.3% precision (22 false positives absorbed)
+ - STAR_B5             : 47.2% precision (94 false positives absorbed)
+ - STAR_F5             : 50.0% precision (36 false positives absorbed)
+ - STAR_A_METALLIC     : 52.3% precision (124 false positives absorbed)
+ - STAR_B0             : 52.4% precision (30 false positives absorbed)
+ - STAR_M0             : 54.0% precision (29 false positives absorbed)
+
+--- 4. PROPOSED QML SUB-PROBLEMS (CLUSTERS) ---
+If you want to train a Quantum Circuit on 3-4 classes, pick one of these groups:
+ Group 1: QSO_STARBURST_BROADLINE, QSO_STARFORMING, GALAXY_STARFORMING
