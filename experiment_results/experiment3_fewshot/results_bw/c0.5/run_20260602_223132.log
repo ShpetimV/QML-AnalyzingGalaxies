@@ -1,0 +1,63 @@
+Writing results to: /home/ubuntu/spectra_project/QML-AnalyzingGalaxies/results_bw/c0.5
+  live log:        /home/ubuntu/spectra_project/QML-AnalyzingGalaxies/results_bw/c0.5/run_20260602_223132.log
+  partial results: /home/ubuntu/spectra_project/QML-AnalyzingGalaxies/results_bw/c0.5/results_20260602_223132.npz (rewritten after every sample size)
+Using SDSS data.
+Classes=4  features/qubits=12  smallest train class=229  test=799
+
+--- PHASE 1: geometric-difference pre-screen ---
+  fidelity    g(C||Q) = [reg=1e-06:3.95, reg=1e-08:3.95, reg=1e-10:3.95]   off-diag std=0.2149
+  projected   g(C||Q) = [reg=1e-06:17.68, reg=1e-08:17.68, reg=1e-10:17.68]   off-diag std=0.2651
+  (g~1 => no advantage possible; off-diag std~0 => kernel concentrated)
+
+--- PHASE 2: multi-seed scaling sweep ---
+
+n = 2 samples/class
+  classical_rbf   0.3628  (95% CI [0.2862, 0.4394])
+  qsvm_fidelity   0.3755  (95% CI [0.3006, 0.4504])
+  qsvm_projected  0.3349  (95% CI [0.2675, 0.4024])
+    qsvm_fidelity vs best-classical: paired t p=0.281, Wilcoxon p=0.250, PRE-REGISTERED advantage=False
+    qsvm_projected vs best-classical: paired t p=0.426, Wilcoxon p=0.547, PRE-REGISTERED advantage=False
+
+n = 5 samples/class
+  classical_rbf   0.4268  (95% CI [0.3706, 0.4830])
+  qsvm_fidelity   0.4507  (95% CI [0.3954, 0.5060])
+  qsvm_projected  0.3935  (95% CI [0.3337, 0.4533])
+    qsvm_fidelity vs best-classical: paired t p=0.030, Wilcoxon p=0.055, PRE-REGISTERED advantage=False
+    qsvm_projected vs best-classical: paired t p=0.193, Wilcoxon p=0.312, PRE-REGISTERED advantage=False
+
+n = 10 samples/class
+  classical_rbf   0.5124  (95% CI [0.4663, 0.5584])
+  qsvm_fidelity   0.5507  (95% CI [0.5207, 0.5807])
+  qsvm_projected  0.4806  (95% CI [0.4415, 0.5197])
+    qsvm_fidelity vs best-classical: paired t p=0.135, Wilcoxon p=0.219, PRE-REGISTERED advantage=False
+    qsvm_projected vs best-classical: paired t p=0.346, Wilcoxon p=0.383, PRE-REGISTERED advantage=False
+
+n = 20 samples/class
+  classical_rbf   0.5727  (95% CI [0.5362, 0.6093])
+  qsvm_fidelity   0.5904  (95% CI [0.5602, 0.6206])
+  qsvm_projected  0.5175  (95% CI [0.4794, 0.5557])
+    qsvm_fidelity vs best-classical: paired t p=0.241, Wilcoxon p=0.188, PRE-REGISTERED advantage=False
+    qsvm_projected vs best-classical: paired t p=0.039, Wilcoxon p=0.078, PRE-REGISTERED advantage=False
+
+n = 50 samples/class
+  classical_rbf   0.6302  (95% CI [0.6144, 0.6460])
+  qsvm_fidelity   0.6518  (95% CI [0.6336, 0.6699])
+  qsvm_projected  0.6047  (95% CI [0.5771, 0.6322])
+    qsvm_fidelity vs best-classical: paired t p=0.021, Wilcoxon p=0.008, PRE-REGISTERED advantage=False
+    qsvm_projected vs best-classical: paired t p=0.074, Wilcoxon p=0.109, PRE-REGISTERED advantage=False
+
+n = 100 samples/class
+  classical_rbf   0.6765  (95% CI [0.6627, 0.6902])
+  qsvm_fidelity   0.6718  (95% CI [0.6631, 0.6804])
+  qsvm_projected  0.6427  (95% CI [0.6288, 0.6566])
+    qsvm_fidelity vs best-classical: paired t p=0.389, Wilcoxon p=0.312, PRE-REGISTERED advantage=False
+    qsvm_projected vs best-classical: paired t p=0.000, Wilcoxon p=0.008, PRE-REGISTERED advantage=False
+
+n = 200 samples/class
+  classical_rbf   0.7270  (95% CI [0.7119, 0.7421])
+  qsvm_fidelity   0.7032  (95% CI [0.6977, 0.7087])
+  qsvm_projected  0.6898  (95% CI [0.6736, 0.7060])
+    qsvm_fidelity vs best-classical: paired t p=0.005, Wilcoxon p=0.008, PRE-REGISTERED advantage=False
+    qsvm_projected vs best-classical: paired t p=0.001, Wilcoxon p=0.008, PRE-REGISTERED advantage=False
+
+Saved results, plot, and log to /home/ubuntu/spectra_project/QML-AnalyzingGalaxies/results_bw/c0.5 (stamp 20260602_223132)
