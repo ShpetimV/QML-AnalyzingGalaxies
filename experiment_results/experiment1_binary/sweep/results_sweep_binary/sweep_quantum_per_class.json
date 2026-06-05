@@ -1,0 +1,422 @@
+[
+  {
+    "config": "qubits2_layers12",
+    "n_qubits": 2,
+    "n_layers": 12,
+    "seed": 42,
+    "accuracy": 0.8619354838709677,
+    "macro_f1": 0.8299773029694769,
+    "macro_recall": 0.8186564924088029,
+    "macro_precision": 0.8452289259734702,
+    "recall_STAR_BROWN_DWARF_L": 0.7094017094017094,
+    "precision_STAR_BROWN_DWARF_L": 0.8097560975609757,
+    "f1_STAR_BROWN_DWARF_L": 0.7562642369020501,
+    "recall_STAR_M8": 0.9279112754158965,
+    "precision_STAR_M8": 0.8807017543859649,
+    "f1_STAR_M8": 0.9036903690369037,
+    "support_BROWN": 234,
+    "support_M8": 541,
+    "confusion": [
+      [
+        166,
+        68
+      ],
+      [
+        39,
+        502
+      ]
+    ]
+  },
+  {
+    "config": "qubits2_layers12",
+    "n_qubits": 2,
+    "n_layers": 12,
+    "seed": 43,
+    "accuracy": 0.8696774193548387,
+    "macro_f1": 0.8367641875955381,
+    "macro_recall": 0.8205641657582508,
+    "macro_precision": 0.8612832291722308,
+    "recall_STAR_BROWN_DWARF_L": 0.6965811965811965,
+    "precision_STAR_BROWN_DWARF_L": 0.844559585492228,
+    "f1_STAR_BROWN_DWARF_L": 0.7634660421545667,
+    "recall_STAR_M8": 0.944547134935305,
+    "precision_STAR_M8": 0.8780068728522337,
+    "f1_STAR_M8": 0.9100623330365093,
+    "support_BROWN": 234,
+    "support_M8": 541,
+    "confusion": [
+      [
+        163,
+        71
+      ],
+      [
+        30,
+        511
+      ]
+    ]
+  },
+  {
+    "config": "qubits2_layers12",
+    "n_qubits": 2,
+    "n_layers": 12,
+    "seed": 44,
+    "accuracy": 0.8580645161290322,
+    "macro_f1": 0.82448157725693,
+    "macro_recall": 0.8122462359985465,
+    "macro_precision": 0.8415107217528035,
+    "recall_STAR_BROWN_DWARF_L": 0.6965811965811965,
+    "precision_STAR_BROWN_DWARF_L": 0.806930693069307,
+    "f1_STAR_BROWN_DWARF_L": 0.7477064220183486,
+    "recall_STAR_M8": 0.9279112754158965,
+    "precision_STAR_M8": 0.8760907504363001,
+    "f1_STAR_M8": 0.9012567324955116,
+    "support_BROWN": 234,
+    "support_M8": 541,
+    "confusion": [
+      [
+        163,
+        71
+      ],
+      [
+        39,
+        502
+      ]
+    ]
+  },
+  {
+    "config": "qubits3_layers8",
+    "n_qubits": 3,
+    "n_layers": 8,
+    "seed": 42,
+    "accuracy": 0.8490322580645161,
+    "macro_f1": 0.8224235006119951,
+    "macro_recall": 0.8251773385784476,
+    "macro_precision": 0.8198711672649852,
+    "recall_STAR_BROWN_DWARF_L": 0.7649572649572649,
+    "precision_STAR_BROWN_DWARF_L": 0.7427385892116183,
+    "f1_STAR_BROWN_DWARF_L": 0.7536842105263157,
+    "recall_STAR_M8": 0.8853974121996303,
+    "precision_STAR_M8": 0.897003745318352,
+    "f1_STAR_M8": 0.8911627906976745,
+    "support_BROWN": 234,
+    "support_M8": 541,
+    "confusion": [
+      [
+        179,
+        55
+      ],
+      [
+        62,
+        479
+      ]
+    ]
+  },
+  {
+    "config": "qubits3_layers8",
+    "n_qubits": 3,
+    "n_layers": 8,
+    "seed": 43,
+    "accuracy": 0.8748387096774194,
+    "macro_f1": 0.8378888349776268,
+    "macro_recall": 0.8133481839581655,
+    "macro_precision": 0.8840672320979048,
+    "recall_STAR_BROWN_DWARF_L": 0.6581196581196581,
+    "precision_STAR_BROWN_DWARF_L": 0.9005847953216374,
+    "f1_STAR_BROWN_DWARF_L": 0.7604938271604939,
+    "recall_STAR_M8": 0.9685767097966729,
+    "precision_STAR_M8": 0.8675496688741722,
+    "f1_STAR_M8": 0.9152838427947598,
+    "support_BROWN": 234,
+    "support_M8": 541,
+    "confusion": [
+      [
+        154,
+        80
+      ],
+      [
+        17,
+        524
+      ]
+    ]
+  },
+  {
+    "config": "qubits3_layers8",
+    "n_qubits": 3,
+    "n_layers": 8,
+    "seed": 44,
+    "accuracy": 0.8722580645161291,
+    "macro_f1": 0.8443841384387911,
+    "macro_recall": 0.83575050950282,
+    "macro_precision": 0.8550699213072026,
+    "recall_STAR_BROWN_DWARF_L": 0.7435897435897436,
+    "precision_STAR_BROWN_DWARF_L": 0.8169014084507042,
+    "f1_STAR_BROWN_DWARF_L": 0.7785234899328859,
+    "recall_STAR_M8": 0.9279112754158965,
+    "precision_STAR_M8": 0.8932384341637011,
+    "f1_STAR_M8": 0.9102447869446962,
+    "support_BROWN": 234,
+    "support_M8": 541,
+    "confusion": [
+      [
+        174,
+        60
+      ],
+      [
+        39,
+        502
+      ]
+    ]
+  },
+  {
+    "config": "qubits4_layers6",
+    "n_qubits": 4,
+    "n_layers": 6,
+    "seed": 42,
+    "accuracy": 0.8683870967741936,
+    "macro_f1": 0.8344239083079192,
+    "macro_recall": 0.8172148759024914,
+    "macro_precision": 0.8612910481331534,
+    "recall_STAR_BROWN_DWARF_L": 0.688034188034188,
+    "precision_STAR_BROWN_DWARF_L": 0.8473684210526315,
+    "f1_STAR_BROWN_DWARF_L": 0.7594339622641509,
+    "recall_STAR_M8": 0.9463955637707948,
+    "precision_STAR_M8": 0.8752136752136752,
+    "f1_STAR_M8": 0.9094138543516874,
+    "support_BROWN": 234,
+    "support_M8": 541,
+    "confusion": [
+      [
+        161,
+        73
+      ],
+      [
+        29,
+        512
+      ]
+    ]
+  },
+  {
+    "config": "qubits4_layers6",
+    "n_qubits": 4,
+    "n_layers": 6,
+    "seed": 43,
+    "accuracy": 0.88,
+    "macro_f1": 0.8469826442333209,
+    "macro_recall": 0.8255328056621957,
+    "macro_precision": 0.8833035697676581,
+    "recall_STAR_BROWN_DWARF_L": 0.688034188034188,
+    "precision_STAR_BROWN_DWARF_L": 0.8895027624309392,
+    "f1_STAR_BROWN_DWARF_L": 0.7759036144578313,
+    "recall_STAR_M8": 0.9630314232902033,
+    "precision_STAR_M8": 0.877104377104377,
+    "f1_STAR_M8": 0.9180616740088106,
+    "support_BROWN": 234,
+    "support_M8": 541,
+    "confusion": [
+      [
+        161,
+        73
+      ],
+      [
+        20,
+        521
+      ]
+    ]
+  },
+  {
+    "config": "qubits4_layers6",
+    "n_qubits": 4,
+    "n_layers": 6,
+    "seed": 44,
+    "accuracy": 0.8593548387096774,
+    "macro_f1": 0.8371814220099494,
+    "macro_recall": 0.8459089688294864,
+    "macro_precision": 0.8302413273001508,
+    "recall_STAR_BROWN_DWARF_L": 0.811965811965812,
+    "precision_STAR_BROWN_DWARF_L": 0.7450980392156863,
+    "f1_STAR_BROWN_DWARF_L": 0.7770961145194274,
+    "recall_STAR_M8": 0.8798521256931608,
+    "precision_STAR_M8": 0.9153846153846154,
+    "f1_STAR_M8": 0.8972667295004713,
+    "support_BROWN": 234,
+    "support_M8": 541,
+    "confusion": [
+      [
+        190,
+        44
+      ],
+      [
+        65,
+        476
+      ]
+    ]
+  },
+  {
+    "config": "qubits6_layers4",
+    "n_qubits": 6,
+    "n_layers": 4,
+    "seed": 42,
+    "accuracy": 0.8490322580645161,
+    "macro_f1": 0.817533670999173,
+    "macro_recall": 0.8118394236693682,
+    "macro_precision": 0.8242091258500048,
+    "recall_STAR_BROWN_DWARF_L": 0.717948717948718,
+    "precision_STAR_BROWN_DWARF_L": 0.7671232876712328,
+    "f1_STAR_BROWN_DWARF_L": 0.7417218543046358,
+    "recall_STAR_M8": 0.9057301293900185,
+    "precision_STAR_M8": 0.8812949640287769,
+    "f1_STAR_M8": 0.8933454876937101,
+    "support_BROWN": 234,
+    "support_M8": 541,
+    "confusion": [
+      [
+        168,
+        66
+      ],
+      [
+        51,
+        490
+      ]
+    ]
+  },
+  {
+    "config": "qubits6_layers4",
+    "n_qubits": 6,
+    "n_layers": 4,
+    "seed": 43,
+    "accuracy": 0.8761290322580645,
+    "macro_f1": 0.8496969696969696,
+    "macro_recall": 0.8421607659130764,
+    "macro_precision": 0.8587383224011131,
+    "recall_STAR_BROWN_DWARF_L": 0.7564102564102564,
+    "precision_STAR_BROWN_DWARF_L": 0.8194444444444444,
+    "f1_STAR_BROWN_DWARF_L": 0.7866666666666666,
+    "recall_STAR_M8": 0.9279112754158965,
+    "precision_STAR_M8": 0.8980322003577818,
+    "f1_STAR_M8": 0.9127272727272727,
+    "support_BROWN": 234,
+    "support_M8": 541,
+    "confusion": [
+      [
+        177,
+        57
+      ],
+      [
+        39,
+        502
+      ]
+    ]
+  },
+  {
+    "config": "qubits6_layers4",
+    "n_qubits": 6,
+    "n_layers": 4,
+    "seed": 44,
+    "accuracy": 0.8554838709677419,
+    "macro_f1": 0.8332488050778428,
+    "macro_recall": 0.8431363255762516,
+    "macro_precision": 0.8256638627742041,
+    "recall_STAR_BROWN_DWARF_L": 0.811965811965812,
+    "precision_STAR_BROWN_DWARF_L": 0.7364341085271318,
+    "f1_STAR_BROWN_DWARF_L": 0.7723577235772358,
+    "recall_STAR_M8": 0.8743068391866913,
+    "precision_STAR_M8": 0.9148936170212766,
+    "f1_STAR_M8": 0.8941398865784499,
+    "support_BROWN": 234,
+    "support_M8": 541,
+    "confusion": [
+      [
+        190,
+        44
+      ],
+      [
+        68,
+        473
+      ]
+    ]
+  },
+  {
+    "config": "qubits8_layers3",
+    "n_qubits": 8,
+    "n_layers": 3,
+    "seed": 42,
+    "accuracy": 0.8619354838709677,
+    "macro_f1": 0.8390933733829296,
+    "macro_recall": 0.8453323222269618,
+    "macro_precision": 0.8337838044191976,
+    "recall_STAR_BROWN_DWARF_L": 0.8034188034188035,
+    "precision_STAR_BROWN_DWARF_L": 0.7550200803212851,
+    "f1_STAR_BROWN_DWARF_L": 0.7784679089026915,
+    "recall_STAR_M8": 0.8872458410351202,
+    "precision_STAR_M8": 0.9125475285171103,
+    "f1_STAR_M8": 0.8997188378631678,
+    "support_BROWN": 234,
+    "support_M8": 541,
+    "confusion": [
+      [
+        188,
+        46
+      ],
+      [
+        61,
+        480
+      ]
+    ]
+  },
+  {
+    "config": "qubits8_layers3",
+    "n_qubits": 8,
+    "n_layers": 3,
+    "seed": 43,
+    "accuracy": 0.8425806451612903,
+    "macro_f1": 0.8187530671083303,
+    "macro_recall": 0.8290440305227735,
+    "macro_precision": 0.8110903659447348,
+    "recall_STAR_BROWN_DWARF_L": 0.7948717948717948,
+    "precision_STAR_BROWN_DWARF_L": 0.7153846153846154,
+    "f1_STAR_BROWN_DWARF_L": 0.7530364372469636,
+    "recall_STAR_M8": 0.8632162661737524,
+    "precision_STAR_M8": 0.9067961165048544,
+    "f1_STAR_M8": 0.884469696969697,
+    "support_BROWN": 234,
+    "support_M8": 541,
+    "confusion": [
+      [
+        186,
+        48
+      ],
+      [
+        74,
+        467
+      ]
+    ]
+  },
+  {
+    "config": "qubits8_layers3",
+    "n_qubits": 8,
+    "n_layers": 3,
+    "seed": 44,
+    "accuracy": 0.8748387096774194,
+    "macro_f1": 0.8527784577723379,
+    "macro_recall": 0.8557870041234181,
+    "macro_precision": 0.84998135111194,
+    "recall_STAR_BROWN_DWARF_L": 0.8076923076923077,
+    "precision_STAR_BROWN_DWARF_L": 0.7842323651452282,
+    "f1_STAR_BROWN_DWARF_L": 0.7957894736842105,
+    "recall_STAR_M8": 0.9038817005545287,
+    "precision_STAR_M8": 0.9157303370786517,
+    "f1_STAR_M8": 0.9097674418604651,
+    "support_BROWN": 234,
+    "support_M8": 541,
+    "confusion": [
+      [
+        189,
+        45
+      ],
+      [
+        52,
+        489
+      ]
+    ]
+  }
+]

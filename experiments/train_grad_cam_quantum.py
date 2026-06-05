@@ -1,6 +1,11 @@
 """
+ANALYSIS (not training) -- interpretability for the quantum binary classifier.
+
 Spectral Grad-CAM & Saliency for the Quantum Binary Classifier
 ================================================================
+NOTE: this is a post-hoc analysis/visualisation script, not a training run. It
+loads a trained checkpoint and produces saliency/Grad-CAM heatmaps. The CLASS_A/
+CLASS_B and checkpoint path constants must be edited to match the model you trained.
 Two complementary analyses:
 
 1. Grad-CAM on the classical CNN extractor's last Conv1d layer
@@ -12,10 +17,6 @@ Two complementary analyses:
 Both produce per-class average heatmaps overlaid on the mean spectrum,
 so you can see if the model is learning physically meaningful features
 (emission lines, continuum breaks, etc.)
-
-Usage (from project root):
-    uv run python experiments/gradcam_quantum_binary.py
-    uv run python experiments/gradcam_quantum_binary.py --checkpoint path/to/best.pt
 """
 
 import sys, os

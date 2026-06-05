@@ -1,3 +1,10 @@
+"""
+EXPERIMENT 1 (binary) -- classical upper-bound reference.
+
+Trains a full SpectraClassifier (CNN, from scratch, NOT frozen) on the binary
+STAR_BROWN_DWARF_L vs STAR_M8 task. High-capacity classical reference point for
+the binary quantum-vs-classical comparison. Output: results_classical_binary/.
+"""
 import sys, os
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 

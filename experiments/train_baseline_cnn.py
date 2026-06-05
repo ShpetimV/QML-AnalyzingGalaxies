@@ -1,3 +1,12 @@
+"""
+PREREQUISITE: Backbone training ("the Beast") -- run this FIRST.
+
+Trains the full multi-class SpectraClassifier (CNN + Transformer) on ALL classes.
+This is the pretrained feature extractor that every Experiment-3 model loads,
+freezes, and reuses (final layer replaced by Identity -> 128-d features). Run
+this if src/models/trained_models/baseline_cnn_transformer.pt does not exist.
+Output: runs/Baseline_CNN_*/ (copy/rename the best checkpoint to the path above).
+"""
 import torch
 import numpy as np
 from src.param_config import SDSSDataConfig

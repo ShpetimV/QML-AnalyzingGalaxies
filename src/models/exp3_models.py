@@ -34,6 +34,62 @@ from src.models.classical_cnn import SpectraClassifier
 
 
 # ---------------------------------------------------------------------------
+# Frozen PCA bottleneck — shared by the PCA variants below
+# ---------------------------------------------------------------------------
+
+class FrozenPCABottleneck(nn.Module):
+    """
+    PCA(in_dim → out_dim), fit once on training-set features, then frozen.
+
+    Stores components/mean as torch buffers so they live on-device with the
+    rest of the model and serialize naturally with state_dict. The 'fitted'
+    flag is also a buffer (0-d bool tensor) so reloading a checkpoint
+    restores it without manual flag-setting.
+    """
+
+    def __init__(self, in_dim: int, out_dim: int):
+        super().__init__()
+        self.in_dim = in_dim
+        self.out_dim = out_dim
+        self.register_buffer("components", torch.zeros(out_dim, in_dim))
+        self.register_buffer("mean", torch.zeros(in_dim))
+        self.register_buffer("fitted", torch.zeros((), dtype=torch.bool))
+
+    @torch.no_grad()
+    def fit(self, features) -> None:
+        if isinstance(features, torch.Tensor):
+            features = features.detach().cpu().numpy()
+        pca = PCA(n_components=self.out_dim, random_state=42)
+        pca.fit(features)
+        target_device = self.components.device
+        self.components.copy_(torch.from_numpy(pca.components_).float().to(target_device))
+        self.mean.copy_(torch.from_numpy(pca.mean_).float().to(target_device))
+        self.fitted.fill_(True)
+
+    def forward(self, x: torch.Tensor) -> torch.Tensor:
+        if not bool(self.fitted):
+            raise RuntimeError("FrozenPCABottleneck.fit() must be called before forward.")
+        return (x - self.mean) @ self.components.T
+
+
+def _fit_pca_on_loader(extractor, bottleneck, loader, device, max_batches=None):
+    """Run training data through the frozen extractor and fit PCA on collected features."""
+    extractor.to(device).eval()
+    feats_chunks = []
+    with torch.no_grad():
+        for i, batch in enumerate(loader):
+            if max_batches and i >= max_batches:
+                break
+            flux = batch['flux'].to(device)
+            aux = batch.get('aux')
+            if aux is not None:
+                aux = aux.to(device)
+            feats_chunks.append(extractor(flux, aux).cpu())
+    feats = torch.cat(feats_chunks, dim=0)
+    bottleneck.fit(feats)
+
+
+# ---------------------------------------------------------------------------
 # Frozen pretrained Beast — shared by both contenders
 # ---------------------------------------------------------------------------
 
@@ -218,6 +274,35 @@ class FrozenBeastTinyClassicalClassifier(nn.Module):
 
 
 # ---------------------------------------------------------------------------
+# Tiny Classical (Tanh-only) — dead-ReLU ablation, identical param count
+# ---------------------------------------------------------------------------
+
+class FrozenBeastTinyClassicalTanhClassifier(nn.Module):
+    """
+    Identical to FrozenBeastTinyClassicalClassifier except the inner ReLU is
+    swapped for Tanh. Tests whether the ~79% cap of the param-matched classical
+    head is caused by dead neurons in the width-4 ReLU layer.
+
+    Same 556 trainable parameters, same shapes, same data flow.
+    """
+
+    def __init__(self, checkpoint_path: str, num_classes: int = 4, feature_dim: int = 128):
+        super().__init__()
+        self.extractor = FrozenBeastExtractor(checkpoint_path)
+        self.head = nn.Sequential(
+            nn.Linear(feature_dim, 4),
+            nn.Tanh(),
+            nn.Linear(4, 4),
+            nn.Tanh(),
+            nn.Linear(4, num_classes),
+        )
+
+    def forward(self, flux, aux=None, *_):
+        feats = self.extractor(flux, aux)
+        return self.head(feats)
+
+
+# ---------------------------------------------------------------------------
 # Quantum VQC head — ~550 trainable params (Hybrid Bottleneck approach)
 # ---------------------------------------------------------------------------
 
@@ -305,3 +390,166 @@ class FrozenBeastVQCClassifier2(nn.Module):
 
         # Final classical linear layer
         return self.readout(q_out)
+
+
+# ---------------------------------------------------------------------------
+# Frozen-PCA variants — shrink the trainable bottleneck to 0 parameters
+# so the comparison isolates the head (VQC vs tiny MLP).
+# ---------------------------------------------------------------------------
+
+class FrozenBeastVQCPCAClassifier(nn.Module):
+    """
+    Frozen Beast → Frozen PCA(128 → n_qubits) → tanh*π → VQC → Linear readout.
+
+    Trainable params:
+      VQC weights: n_layers × n_qubits × 1 RY
+      Readout:     Linear(n_qubits, num_classes)
+    For n_qubits=4, n_layers=5, num_classes=4: 20 + 20 = 40 trainable params.
+
+    Call .fit_pca(train_loader, device) once before training.
+    """
+
+    def __init__(self, checkpoint_path: str, num_classes: int = 4,
+                 n_qubits: int = 4, n_layers: int = 5,
+                 feature_dim: int = 128):
+        super().__init__()
+        self.n_qubits = n_qubits
+        self.n_layers = n_layers
+
+        self.extractor = FrozenBeastExtractor(checkpoint_path)
+        self.bottleneck = FrozenPCABottleneck(feature_dim, n_qubits)
+
+        self.dev = qml.device("default.qubit", wires=n_qubits)
+        self.qnode = qml.QNode(
+            self._circuit, self.dev,
+            interface="torch", diff_method="backprop",
+        )
+        self.q_weights = nn.Parameter(torch.randn(n_layers, n_qubits) * 0.1)
+        self.readout = nn.Linear(n_qubits, num_classes)
+
+    def _circuit(self, features, weights):
+        for layer in range(self.n_layers):
+            for q in range(self.n_qubits):
+                qml.RY(features[:, q], wires=q)
+            for q in range(self.n_qubits):
+                qml.RY(weights[layer, q], wires=q)
+            for q in range(self.n_qubits):
+                qml.CNOT(wires=[q, (q + 1) % self.n_qubits])
+        return [qml.expval(qml.PauliZ(q)) for q in range(self.n_qubits)]
+
+    def fit_pca(self, loader, device, max_batches=None):
+        _fit_pca_on_loader(self.extractor, self.bottleneck, loader, device, max_batches)
+
+    def forward(self, flux, aux=None, *_):
+        original_device = flux.device
+        feats = self.extractor(flux, aux)
+        proj = self.bottleneck(feats)
+        proj = torch.tanh(proj) * math.pi
+        q_list = self.qnode(proj.cpu(), self.q_weights.cpu())
+        q_out = torch.stack(q_list, dim=1).float().to(original_device)
+        return self.readout(q_out)
+
+
+class FrozenBeastVQCHybridClassifier(nn.Module):
+    """
+    Hybrid PCA + small trainable Linear bottleneck.
+
+    Frozen Beast → Frozen PCA(128 → pca_dim) → Linear(pca_dim → n_qubits)
+                 → tanh·π → VQC → Linear(n_qubits, num_classes)
+
+    The 128→n_qubits projection is still learnable end-to-end, but factored
+    into a frozen variance-maximising PCA followed by a tiny trainable Linear.
+    Same expressive shape as V3's single Linear(128, 4), just low-rank-constrained.
+
+    Trainable params:
+      Linear(pca_dim, n_qubits): pca_dim·n_qubits + n_qubits
+      VQC weights:               n_layers · n_qubits
+      Readout:                   n_qubits·num_classes + num_classes
+
+    For pca_dim=16, n_qubits=4, n_layers=5, num_classes=4:
+      Linear(16, 4): 68
+      VQC:           20
+      Readout:       20
+      Total:        108 params  (vs 556 in V3 → 5× smaller)
+
+    Call .fit_pca(train_loader, device) once before training.
+    """
+
+    def __init__(self, checkpoint_path: str, num_classes: int = 4,
+                 n_qubits: int = 4, n_layers: int = 5,
+                 pca_dim: int = 16, feature_dim: int = 128):
+        super().__init__()
+        self.n_qubits = n_qubits
+        self.n_layers = n_layers
+        self.pca_dim = pca_dim
+
+        self.extractor = FrozenBeastExtractor(checkpoint_path)
+        self.pca = FrozenPCABottleneck(feature_dim, pca_dim)
+        self.bottleneck = nn.Linear(pca_dim, n_qubits)
+
+        self.dev = qml.device("default.qubit", wires=n_qubits)
+        self.qnode = qml.QNode(
+            self._circuit, self.dev,
+            interface="torch", diff_method="backprop",
+        )
+        self.q_weights = nn.Parameter(torch.randn(n_layers, n_qubits) * 0.1)
+        self.readout = nn.Linear(n_qubits, num_classes)
+
+    def _circuit(self, features, weights):
+        for layer in range(self.n_layers):
+            for q in range(self.n_qubits):
+                qml.RY(features[:, q], wires=q)
+            for q in range(self.n_qubits):
+                qml.RY(weights[layer, q], wires=q)
+            for q in range(self.n_qubits):
+                qml.CNOT(wires=[q, (q + 1) % self.n_qubits])
+        return [qml.expval(qml.PauliZ(q)) for q in range(self.n_qubits)]
+
+    def fit_pca(self, loader, device, max_batches=None):
+        _fit_pca_on_loader(self.extractor, self.pca, loader, device, max_batches)
+
+    def forward(self, flux, aux=None, *_):
+        original_device = flux.device
+        feats = self.extractor(flux, aux)
+        z = self.pca(feats)
+        z = self.bottleneck(z)
+        z = torch.tanh(z) * math.pi
+        q_list = self.qnode(z.cpu(), self.q_weights.cpu())
+        q_out = torch.stack(q_list, dim=1).float().to(original_device)
+        return self.readout(q_out)
+
+
+class FrozenBeastTinyClassicalPCAClassifier(nn.Module):
+    """
+    Frozen Beast → Frozen PCA(128 → n_features) → tanh*π → tiny MLP head.
+
+    Head shape mirrors the quantum head:
+      Linear(n_features, n_features)   ← mirrors VQC mid-block
+      Tanh                              ← matches VQC's bounded activation
+      Linear(n_features, num_classes)   ← mirrors readout
+
+    For n_features=4, num_classes=4: 20 + 20 = 40 trainable params,
+    matching FrozenBeastVQCPCAClassifier exactly.
+
+    Call .fit_pca(train_loader, device) once before training.
+    """
+
+    def __init__(self, checkpoint_path: str, num_classes: int = 4,
+                 n_features: int = 4, feature_dim: int = 128):
+        super().__init__()
+        self.extractor = FrozenBeastExtractor(checkpoint_path)
+        self.bottleneck = FrozenPCABottleneck(feature_dim, n_features)
+        self.head = nn.Sequential(
+            nn.Linear(n_features, n_features),
+            nn.Tanh(),
+            nn.Linear(n_features, num_classes),
+        )
+
+    def fit_pca(self, loader, device, max_batches=None):
+        _fit_pca_on_loader(self.extractor, self.bottleneck, loader, device, max_batches)
+
+    def forward(self, flux, aux=None, *_):
+        feats = self.extractor(flux, aux)
+        proj = self.bottleneck(feats)
+        proj = torch.tanh(proj) * math.pi
+        return self.head(proj)

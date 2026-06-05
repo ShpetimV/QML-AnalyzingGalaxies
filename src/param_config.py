@@ -46,7 +46,7 @@ class TrainingConfig:
     dropout: float = 0.3
     se_reduction: int = 16
 
-    epochs: int = 300
+    epochs: int = 100
     lr: float = 1e-3
     weight_decay: float = 1e-4
     max_grad_norm: float = 1.0

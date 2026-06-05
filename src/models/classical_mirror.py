@@ -73,3 +73,46 @@ class ClassicalMirrorClassifier(nn.Module):
         feat = torch.tanh(feat) * math.pi  # identical preprocessing to quantum model
         feat = self.classical_layer(feat)
         return self.head(feat)
+
+
+class ClassicalMirrorTanhClassifier(nn.Module):
+    """
+    Dead-ReLU ablation of ClassicalMirrorClassifier.
+
+    Identical to ClassicalMirrorClassifier except the inner ReLU between
+    Linear(4,8) and Linear(8,4) is replaced with Tanh. Tests the hypothesis
+    that the binary classical mirror's collapse is caused by dead neurons
+    starving the trainable extractor of gradient.
+
+    Params: still 76 in the middle layer; extractor and head unchanged.
+    """
+
+    def __init__(
+            self,
+            num_classes: int = 2,
+            n_features: int = 4,
+            dropout: float = 0.2,
+    ):
+        super().__init__()
+
+        self.extractor = SpectralFeatureExtractor(out_features=n_features)
+
+        self.classical_layer = nn.Sequential(
+            nn.Linear(n_features, 8),
+            nn.Tanh(),
+            nn.Linear(8, n_features),
+        )
+
+        self.head = nn.Sequential(
+            nn.Linear(n_features, 32),
+            nn.BatchNorm1d(32),
+            nn.ReLU(),
+            nn.Dropout(dropout),
+            nn.Linear(32, num_classes),
+        )
+
+    def forward(self, flux, *_):
+        feat = self.extractor(flux)
+        feat = torch.tanh(feat) * math.pi
+        feat = self.classical_layer(feat)
+        return self.head(feat)

@@ -1,3 +1,11 @@
+"""
+EXPERIMENT 1 (binary) -- param-matched classical control, ReLU (the broken one).
+
+Trains ClassicalMirrorClassifier (ReLU mirror layer) at the same trainable-param
+budget as the binary VQC. This is the version that shows the dead-ReLU collapse
+(~46%); the Tanh fix is train_classical_mirror_binary_tanh.py. Kept on purpose to
+document the artifact. Output: results_classical_mirror_binary_<A>_vs_<B>/.
+"""
 import sys, os
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
