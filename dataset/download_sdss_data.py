@@ -11,14 +11,15 @@ from tqdm import tqdm
 # ==========================================
 # File paths
 CATALOG_FILE = 'assets/spAll-lite-v6_1_3.fits.gz'
-OUTPUT_LABELS = 'assets/my_qml_dataset_labels.parquet'
+OUTPUT_LABELS = 'subset_k3_k5.parquet'
 DOWNLOAD_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'sdss_spectra')
 PROJECT_DIR = os.path.dirname(os.path.abspath(__file__))
 
 # Download Settings
-SAMPLES_PER_SUBCLASS = 50_000
+SAMPLES_PER_SUBCLASS = 20_000
 
 # Target Classes
+# all classes:
 TARGET_CATEGORIES = {
     'GALAXY': ['NORMAL', 'BROADLINE', 'AGN', 'AGN BROADLINE', 'STARBURST BROADLINE', 'STARBURST', 'STARFORMING', 'STARFORMING BROADLINE'],
     'QSO': ['NORMAL', 'AGN BROADLINE', 'STARBURST BROADLINE', 'STARFORMING', 'BROADLINE', 'STARBURST', 'AGN', 'STARFORMING BROADLINE'],
@@ -59,7 +60,7 @@ def prepare_catalog(file_path):
         pl.when(pl.col('SUBCLASS') == "").then(pl.lit("NORMAL")).otherwise(pl.col('SUBCLASS')).alias('SUBCLASS')
     )
 
-    # Filter for reliable data -> only with no redshift warnings
+    # only with NO redshift warnings
     df = df.filter(pl.col('ZWARNING') == 0)
 
     return df
@@ -113,14 +114,7 @@ def finalize_columns(df):
 # ==========================================
 # SUPER-SPEED RSYNC DOWNLOADER
 # ==========================================
-
-import subprocess
-import time
-import os
-from tqdm import tqdm
-
-
-def download_via_rsync(df, max_retries=5, batch_size=20000):
+def download_via_rsync(df, max_retries=5, batch_size=10_000):
     print(f"\n5. Analyzing {df.height} files to build missing file list...")
 
     missing_files = []
@@ -152,6 +146,8 @@ def download_via_rsync(df, max_retries=5, batch_size=20000):
             rsync_path = p
             break
 
+    print(f"   Using rsync at: {rsync_path}")
+
     base_rsync_url = "rsync://dtn.sdss.org/dr19/spectro/boss/redux/v6_1_3/spectra/lite/"
     list_path = os.path.join(PROJECT_DIR, 'rsync_download_list.txt')
 
@@ -163,19 +159,20 @@ def download_via_rsync(df, max_retries=5, batch_size=20000):
     with tqdm(total=total_missing, desc="Downloading", unit="file") as pbar:
 
         for batch_idx, batch in enumerate(batches):
-            # Write current batch to the text file
+
             with open(list_path, 'w') as f:
                 f.write("\n".join(batch))
 
-            # Added --timeout=300 (5 minutes) so the Mac doesn't hang up prematurely
             cmd = [
                 rsync_path, "-a", "--prune-empty-dirs", "--no-motd",
-                "--timeout=300", "--out-format=SYNCED",
+                "--timeout=300", "--out-format=%n SYNCED", "--trust-sender",
                 f"--files-from={list_path}", base_rsync_url, DOWNLOAD_DIR
             ]
 
             # Retry loop just for this specific batch
-            for _ in range(1, max_retries + 1):
+            for attempt in range(1, max_retries + 1):
+                print(
+                    f"\nStarting Batch {batch_idx + 1}/{len(batches)} with {len(batch)} files. Attempt {attempt}/{max_retries}...")
                 try:
                     process = subprocess.Popen(
                         cmd, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, text=True
@@ -190,7 +187,7 @@ def download_via_rsync(df, max_retries=5, batch_size=20000):
                     process.wait()
 
                     if process.returncode == 0:
-                        break  # Batch succeeded, break out of retry loop and move to next batch
+                        break
                     else:
                         tqdm.write(
                             f"Rsync dropped on Batch {batch_idx + 1} (Code: {process.returncode}). Retrying in 5s...")
@@ -206,20 +203,17 @@ def download_via_rsync(df, max_retries=5, batch_size=20000):
 
     print("\nRSYNC BATCH DOWNLOAD COMPLETE!")
 
-
-# ==========================================
-# MAIN EXECUTION
-# ==========================================
-
 if __name__ == "__main__":
-    # Phase 1: Prepare Metadata
-    raw_df = prepare_catalog(CATALOG_FILE)
-    sampled_df = sample_data(raw_df, TARGET_CATEGORIES, SAMPLES_PER_SUBCLASS)
-    final_labels_df = finalize_columns(sampled_df)
+    # # Phase 1: Prepare Metadata
+    # raw_df = prepare_catalog(CATALOG_FILE)
+    # sampled_df = sample_data(raw_df, TARGET_CATEGORIES, SAMPLES_PER_SUBCLASS)
+    # final_labels_df = finalize_columns(sampled_df)
+    #
+    # # Phase 2: Save Labels
+    # final_labels_df.write_parquet(OUTPUT_LABELS)
+    # print(f"Metadata saved to {OUTPUT_LABELS}")
 
-    # Phase 2: Save Labels
-    final_labels_df.write_parquet(OUTPUT_LABELS)
-    print(f"Metadata saved to {OUTPUT_LABELS}")
+    final_labels_df = pl.read_parquet(OUTPUT_LABELS)
 
     # Phase 3: Ultra-Fast Download
     download_via_rsync(final_labels_df)
