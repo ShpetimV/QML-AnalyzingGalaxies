@@ -8,16 +8,21 @@ from src.training.metrics import SDSSMetricTracker
 from src.param_config import TrainingConfig
 import os
 
+
 def main():
     # 1. Setup Configuration & Data
     # Path is pulled from SDSSDataConfig: dataset/ML_SDSS_CLEANED_DATA.parquet
-    data_config = SDSSDataConfig()
-    training_config = TrainingConfig()
+    data_config = SDSSDataConfig(
+        parquet_path='dataset/GasNetII_full.parquet',
+        fixed_length=3600,
+        scalar_cols=[]
+    )
+    training_config = TrainingConfig(results_dir_baseline='./results_GasNet_II_Replica')
     data_module = SDSSDataModule(data_config)
     data_module.prepare_data()
 
     # Get loaders using the sampler for class balance
-    train_loader = data_module.get_loader(data_module.train_ds) # we dont use weighted random sampler instead we use focal loss to handle class imbalance
+    train_loader = data_module.get_loader(data_module.train_ds)  # no weighted random sampler -> focal loss
     val_loader = data_module.get_loader(data_module.val_ds)
     test_loader = data_module.get_loader(data_module.test_ds)
 
@@ -33,7 +38,7 @@ def main():
 
     # 3. Initialize Trainer & Metrics
     # Performance focus: Handles CUDA/MPS device selection automatically
-    trainer = SDSSPerformanceTrainer(model, data_config, run_name='Baseline_CNN')
+    trainer = SDSSPerformanceTrainer(model, data_config, run_name='GasNet_II_Replica')
     plot_folder = trainer.plots_dir
     tracker = SDSSMetricTracker(results_dir=plot_folder)
 
@@ -84,9 +89,9 @@ def main():
     tracker.plot_confusion_matrix(y_true, y_pred, data_module.classes)
     tracker.plot_per_class_accuracy(y_true, y_pred, data_module.classes)
 
-    tracker.analyze_confusion_matrix(y_true, y_pred, data_module.classes, split_name='baseline_cnn')
+    tracker.analyze_confusion_matrix(y_true, y_pred, data_module.classes, split_name='GasNet_II_Replica')
 
-    print("\nBaseline Complete! Results saved to ./results_baseline")
+    print("\nBaseline Complete! Results saved to ./results_GasNet_II_Replica")
 
     # cleanup the temporary resume state
     if os.path.exists(trainer.resume_file):

@@ -53,9 +53,14 @@ class SDSSDataset(Dataset):
         scale = low + torch.rand(1).item() * (high - low)
         x = x * scale
 
-        # 4. Fiber Masking
-        mask = torch.rand_like(x) > self.config.mask_prob
-        x = x * mask.float()
+        # 4. Multi-Chunk Contiguous Masking 1-3 of 30-100 pixels each
+        if torch.rand(1).item() > 0.5:
+            num_masks = int(torch.randint(1, 3, (1,)).item())
+            for _ in range(num_masks):
+                # Mask out chunks of 30 to 100 pixels each
+                mask_len = int(torch.randint(15, 50, (1,)).item())
+                start_idx = int(torch.randint(0, len(x) - mask_len, (1,)).item())
+                x[start_idx: start_idx + mask_len] = 0.0
 
         # 5. Smoothing (Gaussian blur)
         sigma = torch.rand(1).item() * self.config.max_smoothing_sigma

@@ -62,7 +62,7 @@ class SEResidualBottleneck1D(nn.Module):
     def forward(self, x):
         out = self.conv_path(x)
         out = out + self.skip(x)
-        return F.gelu(self.se(out))  # Using GELU here too
+        return F.gelu(self.se(out))
 
 class MultiScaleStem(nn.Module):
     """Initial convolutional stem that captures multi-scale features from the raw spectrum."""
@@ -165,7 +165,7 @@ class SpectraClassifier(nn.Module):
 
         x = x + self.pos_embed[:, :x.size(1), :] # Add positional embeddings
 
-        attn_out= self.attention(x)
+        attn_out = self.attention(x)
 
         x = x + attn_out
 
