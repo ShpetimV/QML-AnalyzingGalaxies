@@ -1,0 +1,20 @@
+
+=== ADV | heavy head | 10 seeds (auc_window=None) ===
+  Trainable_Quanv vs Trainable_CNN: Q=0.6549±0.0555  C=0.6749±0.0333  Δ=-0.0200  p=0.6953  [floor 0.002] 
+  Frozen_Quanv vs Frozen_CNN: Q=0.6629±0.0454  C=0.6492±0.0515  Δ=+0.0137  p=0.4922  [floor 0.002] 
+  Jacobian ||J||_F: Quanv 0.6842  CNN 0.9380  (lower=smoother)  p=0.0059  [floor 0.002] 
+
+=== ADV | light head | 10 seeds (auc_window=None) ===
+  Trainable_Quanv vs Trainable_CNN: Q=0.5454±0.0335  C=0.5924±0.0222  Δ=-0.0470  p=0.0137  [floor 0.002] 
+  Frozen_Quanv vs Frozen_CNN: Q=0.5275±0.0188  C=0.5424±0.0253  Δ=-0.0149  p=0.3008  [floor 0.002] 
+  Jacobian ||J||_F: Quanv 0.5280  CNN 0.2182  (lower=smoother)  p=0.0645  [floor 0.002] 
+
+=== OOD | heavy head | 10 seeds (auc_window=None) ===
+  Trainable_Quanv vs Trainable_CNN: Q=0.5630±0.0137  C=0.5629±0.0263  Δ=+0.0001  p=0.6250  [floor 0.002] 
+  Frozen_Quanv vs Frozen_CNN: Q=0.5975±0.0308  C=0.5837±0.0353  Δ=+0.0138  p=0.3750  [floor 0.002] 
+  Jacobian ||J||_F: Quanv 0.7467  CNN 1.0524  (lower=smoother)  p=0.0059  [floor 0.002] 
+
+=== OOD | light head | 10 seeds (auc_window=None) ===
+  Trainable_Quanv vs Trainable_CNN: Q=0.5491±0.0501  C=0.5637±0.0293  Δ=-0.0147  p=0.2754  [floor 0.002] 
+  Frozen_Quanv vs Frozen_CNN: Q=0.5204±0.0184  C=0.5374±0.0374  Δ=-0.0170  p=0.3594  [floor 0.002] 
+  Jacobian ||J||_F: Quanv 0.5586  CNN 0.2816  (lower=smoother)  p=0.1055  [floor 0.002] 
