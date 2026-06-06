@@ -30,6 +30,10 @@ The central questions explored quantum machine learning algorithms in the contex
    extractor is more parameter-efficient than its classical counterparts.
 3. How quantum circuit shape (qubit count vs. circuit depth) and data encoding
    affect class balance, convergence, and stability.
+4. How QSVMs can be trained in a few-shot area and how they compare to classical
+   SVMs.
+5. Whether quanvolutional layers can be robust to adversarial and ood training with added noise in testing.
+6. How a quantum CNN can be trained on a hard 4-class spectral-classification task.
 
 ## Data
 
@@ -45,37 +49,53 @@ handled via a weighted sampler and a focal-loss objective. See
 ## Repository structure
 
 ```
-.
-├── src/                      # Library code
-│   ├── models/               # Model definitions
-│   │   ├── classical_cnn.py      # The "Beast": CNN+Transformer extractor/classifier
-│   │   ├── quantum_model.py      # Angle-encoded VQC classifier (Experiment 1)
-│   │   ├── classical_mirror.py   # Parameter-matched classical controls (Experiment 1)
-│   │   └── exp3_models.py        # Frozen-extractor heads: dense / VQC / controls (Experiment 2)
-│   ├── training/             # Shared trainer, metrics, logging
-│   ├── sdss_dataloader.py    # Data module: splits, augmentation, sampling
-│   └── param_config.py       # Central hyperparameter / data configuration
+├── src/                          # Library code
+│   ├── models/                   # Model definitions
+│   │   ├── classical_cnn.py      # Baseline CNN+Transformer backbone & classifier
+│   │   ├── quantum_model.py      # Angle/amplitude encoded VQC (Experiment 1)
+│   │   ├── classical_mirror.py   # Parameter-matched classical nets (Experiment 1)
+│   │   ├── exp3_models.py        # Frozen-extractor heads: dense, VQC, controls (Exp 2)
+│   │   ├── qcnn.py               # Quantum convolutional neural network (Experiment 5)
+│   │   ├── quanvolution.py       # Quanvolutional layer & noise‑robust models (Exp 4)
+│   │   ├── qsvm.py               # Quantum kernel SVM (Experiment 3 few‑shot)
+│   │   └── classical_baselines.py# Tiny classical heads for Exp2/Exp5 controls
+│   ├── training/                 # Shared training utilities
+│   │   ├── trainer.py            # Main training loop (classification & robustness)
+│   │   ├── metrics.py            # Accuracy, confusion matrix, AUC, Jacobian slopes
+│   │   └── logger.py             # TensorBoard / file logging, checkpointing
+│   ├── sdss_dataloader.py        # Data module: SDSS, GasNet, splits, PCA, augmentations
+│   └── param_config.py           # Central config: hyperparams, paths, experiment flags
 │
-├── experiments/              # Runnable training & analysis scripts (see experiments/README.md)
+├── experiments/                  # Runnable training & analysis scripts (see experiments/README.md)
 │
-├── experiment_results/       # Saved figures and metrics, organised by experiment
-│   ├── baseline/             # Backbone feature extractor
-│   ├── experiment1_binary/   # VQC vs. parameter-matched classical (binary)
-│   └── experiment2_4class/   # Hybrid quantum head vs. classical controls (4-class)
+├── experiment_results/           # Saved figures and metrics, organised by experiment
+│   ├── Baseline_CNN/             # Backbone feature extractor
+│   ├── GasNet_II_Replica/        # Replicated baseline on GasNet II dataset
+│   ├── experiment1_binary/       # VQC vs. classical mirror (binary L vs M8)
+│   ├── experiment2_4class/       # Hybrid quantum head vs. classical controls (4‑class)
+│   ├── experiment3_fewshot/      # QSVM few‑shot scaling behaviour
+│   ├── experiment4_quanv_noise_robustness/ # Quanvolution under adversarial/OOD noise
+│   └── experiment5_qcnn/         # QCNN vs. classical controls (CNN_Huge, CNN_Tiny)
 │
-├── dataset/                  # Dataset construction, download, and cleaned data
-├── figures/                  # Methodology figures (e.g. circuit diagrams)
-├── runs/                     # Per-run training logs and checkpoints (not version-controlled)
-└── pyproject.toml            # Dependencies (managed with uv)
+├── dataset/                      # Dataset construction, download, and cleaned data
+│
+├── pyproject.toml                # Dependencies (managed with uv)
+├── uv.lock                       # Exact dependency lockfile
+├── setup_data_pipeline.sh        # Script to initialise data & environment
+├── run_exp4_parallel_noise.sh    # Launch parallel Exp4 noise jobs
+└── run_exp5_qcnn_matrix.sh       # Launch full Exp5 matrix experiment
 ```
 
 ## Experiments
 
-| # | Task | Question | Key models | Results |
-|---|------|----------|-----------|---------|
-| Baseline | 62-class | Reference feature extractor ("the Beast") | CNN + Transformer | `experiment_results/baseline/` |
+| # | Task | Question | Key models                                      | Results |
+|---|------|----------|-------------------------------------------------|---------|
+| Baseline | 62-class | Reference feature extractor ("the Beast") | CNN + Transformer                               | `experiment_results/baseline/` |
 | 1 | Binary (BROWN_DWARF_L vs. M8) | VQC vs. parameter-matched classical | Angle-encoded VQC; classical mirror (ReLU/Tanh) | `experiment_results/experiment1_binary/` |
-| 2 | 4-class hard task | Parameter-efficient hybrid quantum head | Dense (A), VQC (B), classical controls (C/D) | `experiment_results/experiment2_4class/` |
+| 2 | 4-class hard task | Parameter-efficient hybrid quantum head | Dense (A), VQC (B), classical controls (C/D)    | `experiment_results/experiment2_4class/` |
+| 3 | Few-shot scaling | Quantum SVM | SVM (A), QSVM (B)                               | `experiment_results/experiment3_fewshot/` |
+| 4 | Noise robustness | Quanvolutional layer | classic CNN (A), Quanv (B)                      | `experiment_results/experiment4_quanv_noise_robustness/` |
+| 5 | 4-class hard task | Quantum CNN | classical CNN (A), QCNN (B), tiny classical control (C) | `experiment_results/experiment5_qcnn/` |
 
 Per-script documentation and run order are
 in [`experiments/README.md`](experiments/README.md).
@@ -101,6 +121,15 @@ circuit simulation via `default.qubit`), scikit-learn, NumPy/SciPy, and
 matplotlib. The quantum circuits are simulated **noiselessly** on CPU; no physical
 quantum hardware is required.
 
+The dataset afterwards needs to be downloaded and processed:
+
+```bash
+bash setup_data_pipeline.sh
+```
+
+This script will download the SDSS spectra, clean and merge them into a a full dataset.
+For the other experiments, subsets of the full dataset have to be created.
+
 ## Usage
 
 All scripts are run from the project root so that relative paths resolve:
@@ -117,6 +146,18 @@ uv run python experiments/train_experiment_4class_classical.py
 uv run python experiments/train_experiment_4class_quantum.py
 uv run python experiments/train_experiment_4class_classical_tiny.py
 uv run python experiments/train_experiment_4class_classical_tiny_tanh.py
+
+# 4. Experiment 3 — few-shot scaling of SVM vs. QSVM
+# n-feature sweep: 
+for f in 4 6 8 12 16; do uv run python -m experiments.run_exp1_fewshot_new --features $f --out experiment_results/experiment3_fewshot/results_sweep/f$f; done
+# c-value sweep:
+for c in 0.1 0.25 0.5 0.75 1.0 1.5; do uv run python -m experiments.run_exp1_fewshot_new --features 12 --bandwidth $c --out experiment_results/experiment3_fewshot/results_bw/c$c; done
+
+# 5. Experiment 4 — noise robustness of quanvolutional layer
+uv run bash experiments/run_exp4_parallel_noise.sh
+
+# 6. Experiment 5 — QCNN vs. classical controls (full matrix)
+uv run bash experiments/run_exp5_qcnn_matrix.sh
 ```
 
 Hyperparameters are set in `src/param_config.py` and in constants near the top of
