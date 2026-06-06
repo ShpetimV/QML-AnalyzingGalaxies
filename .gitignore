@@ -6,3 +6,6 @@ sdss_spectra
 *.gz
 subclass_merge_groups.json
 runs
+*.pt
+*.npy
+*.npz
