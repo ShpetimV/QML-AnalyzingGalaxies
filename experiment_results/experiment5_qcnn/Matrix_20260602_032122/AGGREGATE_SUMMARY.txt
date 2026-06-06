@@ -1,0 +1,45 @@
+RUN DIR: /Users/moritz/ZHAW-code/QML-AnalyzingGalaxies/results_exp4_qcnn/Matrix_20260602_032122
+MODELS: CNN_Huge, CNN_Tiny, QCNN, QCNN_Hyb
+QUADRANTS: 1_HighData_Clean, 2_HighData_Adv, 3_FewShot_Clean, 4_FewShot_Adv
+
+=== 1_HighData_Clean ===
+  QCNN: AUC 0.4084 ± 0.0390 (n=10)
+  CNN_Huge: AUC 0.3461 ± 0.0190 (n=10)
+  CNN_Tiny: AUC 0.4619 ± 0.0593 (n=10)
+  QCNN_Hyb: AUC 0.4483 ± 0.0584 (n=10)
+
+=== 2_HighData_Adv ===
+  QCNN: AUC 0.5762 ± 0.0216 (n=10)
+  CNN_Huge: AUC 0.6726 ± 0.0258 (n=10)
+  CNN_Tiny: AUC 0.5437 ± 0.0399 (n=10)
+  QCNN_Hyb: AUC 0.6319 ± 0.0372 (n=10)
+
+=== 3_FewShot_Clean ===
+  QCNN: AUC 0.3123 ± 0.0288 (n=10)
+  CNN_Huge: AUC 0.3052 ± 0.0255 (n=10)
+  CNN_Tiny: AUC 0.2834 ± 0.0642 (n=10)
+  QCNN_Hyb: AUC 0.3623 ± 0.0561 (n=10)
+
+=== 4_FewShot_Adv ===
+  QCNN: AUC 0.3636 ± 0.0853 (n=10)
+  CNN_Huge: AUC 0.4788 ± 0.0632 (n=10)
+  CNN_Tiny: AUC 0.2857 ± 0.0724 (n=10)
+  QCNN_Hyb: AUC 0.4434 ± 0.0811 (n=10)
+
+Jacobian (median per model/quadrant):
+  1_HighData_Clean | CNN_Huge: median ||J||_2 = 5.8503
+  1_HighData_Clean | CNN_Tiny: median ||J||_2 = 4.3310
+  1_HighData_Clean | QCNN: median ||J||_2 = 3.7778
+  1_HighData_Clean | QCNN_Hyb: median ||J||_2 = 4.8279
+  2_HighData_Adv | CNN_Huge: median ||J||_2 = 2.1422
+  2_HighData_Adv | CNN_Tiny: median ||J||_2 = 2.3269
+  2_HighData_Adv | QCNN: median ||J||_2 = 1.9912
+  2_HighData_Adv | QCNN_Hyb: median ||J||_2 = 1.8696
+  3_FewShot_Clean | CNN_Huge: median ||J||_2 = 4.1164
+  3_FewShot_Clean | CNN_Tiny: median ||J||_2 = 0.1500
+  3_FewShot_Clean | QCNN: median ||J||_2 = 0.4096
+  3_FewShot_Clean | QCNN_Hyb: median ||J||_2 = 0.7860
+  4_FewShot_Adv | CNN_Huge: median ||J||_2 = 1.9161
+  4_FewShot_Adv | CNN_Tiny: median ||J||_2 = 0.1472
+  4_FewShot_Adv | QCNN: median ||J||_2 = 0.2295
+  4_FewShot_Adv | QCNN_Hyb: median ||J||_2 = 0.7509
