@@ -16,11 +16,13 @@ dependencies = [
     "scipy-stubs>=1.17.1.3",
     "sdss-access>=3.0.10",
     "pennylane>=0.39.0",
+    "pennylane-lightning[gpu]>=0.39.0; sys_platform == 'linux' and (platform_machine == 'x86_64' or platform_machine == 'aarch64')",
     "torch>=2.6.0",
     "visualtorch>=0.2.4",
     "torchview>=0.2.7",
     "torchviz>=0.0.3",
     "onnxscript>=0.6.2",
+    "numpy>=2.4.3",
 ]
 
 [[tool.uv.index]]

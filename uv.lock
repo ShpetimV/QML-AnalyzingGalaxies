@@ -420,6 +420,15 @@ nvtx = [
 ]
 
 [[package]]
+name = "custatevec-cu12"
+version = "1.13.1"
+source = { registry = "https://pypi.org/simple" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/dd/1c/3ca3983b416e9f0f9a4da902d4eb69879969a08bc2db05b4e7854fdd6a61/custatevec_cu12-1.13.1-py3-none-manylinux2014_aarch64.whl", hash = "sha256:ee55f85e81cac11c09fbde3b63e64c309279537efbe9fb91b57d5e35cd3b8073", size = 73147948, upload-time = "2026-04-13T18:21:05.772Z" },
+    { url = "https://files.pythonhosted.org/packages/65/c0/4b092e048b44c6658521bbaaca4a08daf964e3a1de1d8fe024c008fa9343/custatevec_cu12-1.13.1-py3-none-manylinux2014_x86_64.whl", hash = "sha256:359626fd842e53fa0d84912bd7c6e2a891ac8b6ea3e490479fba73805425a410", size = 73152910, upload-time = "2026-04-13T18:10:34.608Z" },
+]
+
+[[package]]
 name = "cycler"
 version = "0.12.1"
 source = { registry = "https://pypi.org/simple" }
@@ -1392,6 +1401,33 @@ wheels = [
     { url = "https://files.pythonhosted.org/packages/cf/d1/b681ae8546b264a4c9d999b8e57a3291cbf38edf39194d5416fbae19f8af/pennylane_lightning-0.44.0-py3-none-any.whl", hash = "sha256:a5a257f89c623565df68f987437de380495299b1271b935e1269717198668e71", size = 1037558, upload-time = "2026-01-13T15:35:46.04Z" },
 ]
 
+[package.optional-dependencies]
+gpu = [
+    { name = "pennylane-lightning-gpu", marker = "platform_machine != 's390x' and sys_platform != 'darwin' and sys_platform != 'emscripten' and sys_platform != 'win32'" },
+]
+
+[[package]]
+name = "pennylane-lightning-gpu"
+version = "0.44.0"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "custatevec-cu12", marker = "platform_machine != 's390x' and sys_platform != 'darwin' and sys_platform != 'emscripten' and sys_platform != 'win32'" },
+    { name = "nvidia-cublas-cu12", marker = "platform_machine != 's390x' and sys_platform != 'darwin' and sys_platform != 'emscripten' and sys_platform != 'win32'" },
+    { name = "nvidia-cuda-runtime-cu12", marker = "platform_machine != 's390x' and sys_platform != 'darwin' and sys_platform != 'emscripten' and sys_platform != 'win32'" },
+    { name = "nvidia-cusparse-cu12", marker = "platform_machine != 's390x' and sys_platform != 'darwin' and sys_platform != 'emscripten' and sys_platform != 'win32'" },
+    { name = "nvidia-nvjitlink-cu12", marker = "platform_machine != 's390x' and sys_platform != 'darwin' and sys_platform != 'emscripten' and sys_platform != 'win32'" },
+    { name = "pennylane", marker = "platform_machine != 's390x' and sys_platform != 'darwin' and sys_platform != 'emscripten' and sys_platform != 'win32'" },
+    { name = "pennylane-lightning", marker = "platform_machine != 's390x' and sys_platform != 'darwin' and sys_platform != 'emscripten' and sys_platform != 'win32'" },
+    { name = "scipy-openblas32", marker = "platform_machine != 's390x' and sys_platform != 'darwin' and sys_platform != 'emscripten' and sys_platform != 'win32'" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/ae/4e/a1123ac233f2badd82fab907080dd36c4b1d356402b1ff580948ae2cf346/pennylane_lightning_gpu-0.44.0.tar.gz", hash = "sha256:2e22d10855a5877ce99a2daf63f668228fdc78d695a10207d9b448ba697e3167", size = 765799, upload-time = "2026-01-13T15:36:42.888Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/23/cf/09a7041cccc248d7f4efa57fbff379c86eb68e7132433bee5bf6e38c4c70/pennylane_lightning_gpu-0.44.0-cp312-cp312-manylinux_2_28_aarch64.whl", hash = "sha256:609c0880e263ba77436dc756af25bc9b90f428967e2af85d938ac003afdfb72b", size = 831501, upload-time = "2026-01-13T15:36:00.541Z" },
+    { url = "https://files.pythonhosted.org/packages/5c/12/1517dae4e66e3b4823abc9b7e84ff4bc61792bf6856506ac3dbb49884ab0/pennylane_lightning_gpu-0.44.0-cp312-cp312-manylinux_2_28_x86_64.whl", hash = "sha256:056236be420a088d690f72de4e4d22a5af1443bd9b899aca97364db450d1631a", size = 913270, upload-time = "2026-01-13T15:36:01.66Z" },
+    { url = "https://files.pythonhosted.org/packages/45/83/45a04d4c27cb67ccfc1364c8659060d16b33b1e2238cde9604a2922d0278/pennylane_lightning_gpu-0.44.0-cp313-cp313-manylinux_2_28_aarch64.whl", hash = "sha256:13f0e8c11f61981de29b292d0a05c875b4af67dd97d71dad248ecc44d567402e", size = 831402, upload-time = "2026-01-13T15:36:02.941Z" },
+    { url = "https://files.pythonhosted.org/packages/00/86/4361f276bcf73feadb7a263fe287d5ea6a24b461be02407c3bb2f2af048f/pennylane_lightning_gpu-0.44.0-cp313-cp313-manylinux_2_28_x86_64.whl", hash = "sha256:9006fb3970dd3fa2a6064a618d1974cc530f2fa6e169fa96f600c668fa7c0f87", size = 913217, upload-time = "2026-01-13T15:36:04.132Z" },
+]
+
 [[package]]
 name = "pillow"
 version = "12.1.1"
@@ -1677,9 +1713,11 @@ dependencies = [
     { name = "astropy" },
     { name = "datasets" },
     { name = "matplotlib" },
+    { name = "numpy" },
     { name = "onnxscript" },
     { name = "pandas" },
     { name = "pennylane" },
+    { name = "pennylane-lightning", extra = ["gpu"], marker = "(platform_machine == 'aarch64' and sys_platform == 'linux') or (platform_machine == 'x86_64' and sys_platform == 'linux')" },
     { name = "polars" },
     { name = "pyarrow" },
     { name = "requests" },
@@ -1698,9 +1736,11 @@ requires-dist = [
     { name = "astropy", specifier = ">=7.2.0" },
     { name = "datasets", specifier = ">=4.8.4" },
     { name = "matplotlib", specifier = ">=3.10.8" },
+    { name = "numpy", specifier = ">=2.4.3" },
     { name = "onnxscript", specifier = ">=0.6.2" },
     { name = "pandas", specifier = ">=3.0.1" },
     { name = "pennylane", specifier = ">=0.39.0" },
+    { name = "pennylane-lightning", extras = ["gpu"], marker = "(platform_machine == 'aarch64' and sys_platform == 'linux') or (platform_machine == 'x86_64' and sys_platform == 'linux')", specifier = ">=0.39.0" },
     { name = "polars", specifier = ">=1.39.3" },
     { name = "pyarrow", specifier = ">=23.0.1" },
     { name = "requests", specifier = ">=2.33.0" },
@@ -2045,15 +2085,15 @@ dependencies = [
     { name = "typing-extensions", marker = "sys_platform != 'darwin'" },
 ]
 wheels = [
-    { url = "https://download-r2.pytorch.org/whl/cu126/torch-2.11.0%2Bcu126-cp312-cp312-manylinux_2_28_aarch64.whl" },
-    { url = "https://download-r2.pytorch.org/whl/cu126/torch-2.11.0%2Bcu126-cp312-cp312-manylinux_2_28_x86_64.whl" },
-    { url = "https://download-r2.pytorch.org/whl/cu126/torch-2.11.0%2Bcu126-cp312-cp312-win_amd64.whl" },
-    { url = "https://download-r2.pytorch.org/whl/cu126/torch-2.11.0%2Bcu126-cp313-cp313-manylinux_2_28_aarch64.whl" },
-    { url = "https://download-r2.pytorch.org/whl/cu126/torch-2.11.0%2Bcu126-cp313-cp313-manylinux_2_28_x86_64.whl" },
-    { url = "https://download-r2.pytorch.org/whl/cu126/torch-2.11.0%2Bcu126-cp313-cp313-win_amd64.whl" },
-    { url = "https://download-r2.pytorch.org/whl/cu126/torch-2.11.0%2Bcu126-cp313-cp313t-manylinux_2_28_aarch64.whl" },
-    { url = "https://download-r2.pytorch.org/whl/cu126/torch-2.11.0%2Bcu126-cp313-cp313t-manylinux_2_28_x86_64.whl" },
-    { url = "https://download-r2.pytorch.org/whl/cu126/torch-2.11.0%2Bcu126-cp313-cp313t-win_amd64.whl" },
+    { url = "https://download-r2.pytorch.org/whl/cu126/torch-2.11.0%2Bcu126-cp312-cp312-manylinux_2_28_aarch64.whl", hash = "sha256:dc05f49d97c04a32d139df19d77209ceca3c484083f0db1dc332f168a19ef8d8", upload-time = "2026-04-27T20:54:02Z" },
+    { url = "https://download-r2.pytorch.org/whl/cu126/torch-2.11.0%2Bcu126-cp312-cp312-manylinux_2_28_x86_64.whl", hash = "sha256:9235c0c2f5032d1f8af75dd97493f3ad12aaedf81c0f3fab2d13c1d90bc54ff9", upload-time = "2026-04-27T20:54:34Z" },
+    { url = "https://download-r2.pytorch.org/whl/cu126/torch-2.11.0%2Bcu126-cp312-cp312-win_amd64.whl", hash = "sha256:1b7d728ddcf84b12f64ca10ec5f6ce91dd9edcc5e62ed5f0a7260ca00f029e8b", upload-time = "2026-04-27T20:56:19Z" },
+    { url = "https://download-r2.pytorch.org/whl/cu126/torch-2.11.0%2Bcu126-cp313-cp313-manylinux_2_28_aarch64.whl", hash = "sha256:3bbbfc7ed16d878aef9b91a8e78c033bf131ffb8357e23ff80911210683a31b3", upload-time = "2026-04-27T20:58:05Z" },
+    { url = "https://download-r2.pytorch.org/whl/cu126/torch-2.11.0%2Bcu126-cp313-cp313-manylinux_2_28_x86_64.whl", hash = "sha256:5f6e2a5709876dd25a5fe0d4f0ab1ef33b33bb60431fcbfe768ab6468dcfe88a", upload-time = "2026-04-27T20:58:40Z" },
+    { url = "https://download-r2.pytorch.org/whl/cu126/torch-2.11.0%2Bcu126-cp313-cp313-win_amd64.whl", hash = "sha256:12f7f1b73ba522576ea2050fbe2dc720a30cf681c73b8ea2d4f5480d66fad8f3", upload-time = "2026-04-27T21:00:22Z" },
+    { url = "https://download-r2.pytorch.org/whl/cu126/torch-2.11.0%2Bcu126-cp313-cp313t-manylinux_2_28_aarch64.whl", hash = "sha256:7945e39fe82b85d7d018f68085ffaa6c5305a1634adb0bc792d835953b36fc9b", upload-time = "2026-04-27T21:02:11Z" },
+    { url = "https://download-r2.pytorch.org/whl/cu126/torch-2.11.0%2Bcu126-cp313-cp313t-manylinux_2_28_x86_64.whl", hash = "sha256:47adcccf4de0fdb4a1550f477d919daec74f1007d15d939acfcef3080d26f9ec", upload-time = "2026-04-27T21:02:46Z" },
+    { url = "https://download-r2.pytorch.org/whl/cu126/torch-2.11.0%2Bcu126-cp313-cp313t-win_amd64.whl", hash = "sha256:478ba5a57cba329f6878cf4c9bf6baa21c17c2e2b39784e0f7d3ee56b10a85a7", upload-time = "2026-04-27T21:04:33Z" },
 ]
 
 [[package]]
