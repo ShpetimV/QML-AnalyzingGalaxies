@@ -49,7 +49,12 @@ class SDSSMetricTracker:
         plt.close()
 
     def plot_confusion_matrix(self, y_true, y_pred, class_names, split_name='test'):
-        """Generates a row-normalized confusion matrix to identify hard-to-classify objects."""
+        """Generates a row-normalized confusion matrix to identify hard-to-classify objects.
+
+        Rendered on a white background with dark text so it drops straight into the
+        thesis. Annotation and label fonts scale up as the class count drops, which
+        keeps the small binary and four-class matrices readable.
+        """
         n = len(class_names)
         cm = confusion_matrix(y_true, y_pred, labels=list(range(n)))
 
@@ -57,32 +62,46 @@ class SDSSMetricTracker:
         cm_norm = np.divide(cm.astype(float), cm.sum(axis=1, keepdims=True),
                             where=cm.sum(axis=1, keepdims=True) != 0)
 
-        fig_size = max(10, int(n * 0.7))
-        fig, ax = plt.subplots(figsize=(fig_size, fig_size * 0.8))
-        fig.patch.set_facecolor(self.bg_color)
-        ax.set_facecolor(self.bg_color)
+        # Font sizes grow for small matrices so the numbers are easy to read
+        ann_fs = 22 if n <= 2 else 18 if n <= 4 else max(8, int(120 / n))
+        tick_fs = 15 if n <= 4 else max(8, int(90 / n))
+        label_fs = 16 if n <= 6 else 13
 
-        im = ax.imshow(cm_norm, interpolation='nearest', cmap='Blues', vmin=0, vmax=1)
-        plt.colorbar(im, ax=ax, fraction=0.046, pad=0.04).ax.tick_params(colors='#888888')
+        fig_w = max(6.5, n * 0.7)
+        fig_h = max(5.5, n * 0.6)
+        fig, ax = plt.subplots(figsize=(fig_w, fig_h), constrained_layout=True)
+        fig.patch.set_facecolor('white')
+        ax.set_facecolor('white')
+
+        # aspect='auto' lets the grid fill the axes so it stays centred instead of
+        # being shrunk into a square and pushed into one corner
+        im = ax.imshow(cm_norm, interpolation='nearest', cmap='Blues',
+                       vmin=0, vmax=1, aspect='auto')
+        cbar = plt.colorbar(im, ax=ax, fraction=0.046, pad=0.04)
+        cbar.ax.tick_params(colors='black')
+        cbar.outline.set_edgecolor('black')
 
         ax.set_xticks(range(n))
         ax.set_yticks(range(n))
-        ax.set_xticklabels(class_names, rotation=45, ha='right', color=self.text_color)
-        ax.set_yticklabels(class_names, color=self.text_color)
+        ax.set_xticklabels(class_names, rotation=45, ha='right', color='black', fontsize=tick_fs)
+        ax.set_yticklabels(class_names, color='black', fontsize=tick_fs)
+        ax.tick_params(colors='black')
+        for spine in ax.spines.values():
+            spine.set_edgecolor('black')
 
-        # Annotate with percentages
+        # Annotate with percentages: dark text on light cells, white text on dark cells
         for i, j in itertools.product(range(n), range(n)):
             val = cm_norm[i, j]
-            if val > 0.01:
+            if val > 0.005:
                 ax.text(j, i, f'{val:.2f}', ha="center", va="center",
-                        color="white" if val > 0.5 else "#aaaaaa", fontsize=8)
+                        color="white" if val > 0.5 else "black", fontsize=ann_fs)
 
-        ax.set_ylabel('True Label', color=self.text_color, fontsize=12)
-        ax.set_xlabel('Predicted Label', color=self.text_color, fontsize=12)
-        ax.set_title(f'Confusion Matrix - {split_name.upper()}', color='white', pad=20)
+        ax.set_ylabel('True Label', color='black', fontsize=label_fs)
+        ax.set_xlabel('Predicted Label', color='black', fontsize=label_fs)
+        ax.set_title(f'Confusion Matrix - {split_name.upper()}', color='black', fontsize=label_fs + 2, pad=20)
 
-        plt.tight_layout()
-        plt.savefig(os.path.join(self.results_dir, f"cm_{split_name}.png"), facecolor=self.bg_color)
+        plt.savefig(os.path.join(self.results_dir, f"cm_{split_name}.png"),
+                    facecolor='white', dpi=150)
         plt.close()
 
     def plot_per_class_accuracy(self, y_true, y_pred, class_names):
